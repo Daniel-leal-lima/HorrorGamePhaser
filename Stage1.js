@@ -7,7 +7,7 @@ var stage1State = {
         backgroundlayer = map.createLayer('background');
         blockedLayer = map.createLayer('collidables');
     
-        map.setCollisionBetween(1, 2000, true, 'collidables');
+        map.setCollisionBetween(32, 32, true, 'collidables');
         
         //backgroundlayer.resizeWorld();
         
@@ -15,11 +15,11 @@ var stage1State = {
         result2 = this.findObjectsByType('enemyStart', map, 'objectsLayer')
         
         
-        inimigo = game.add.sprite(result2[0].x + 16, result2[0].y + 16,'Player');
-        
-        inimigo.anchor.set(.5);
+        inimigo = game.add.sprite(result2[0].x+16, result2[0].y,'Player');
+        console.log(inimigo.x,inimigo.y);
+        //inimigo.anchor.set(.5);
         inimigo.tint = "#fff";
-        player = game.add.sprite(result[0].x+16, result[0].y+16,'Player');
+        player = game.add.sprite(result[0].x+16, result[0].y-16,'Player');
         player.anchor.set(.5);
         
         //Jogador
@@ -31,10 +31,10 @@ var stage1State = {
         //------------------------------
         
         //inimigo
-        inimigo.animations.add('W',[8,9,10,11],5);
-        inimigo.animations.add('D',[4,5,6,7],5);
-        inimigo.animations.add('A',[12,13,14,15],5);
-        inimigo.animations.add('S',[0,1,2,3],5);
+        inimigo.animations.add('Cima',[8,9,10,11],5,false);
+        inimigo.animations.add('Direita',[4,5,6,7],5),false;
+        inimigo.animations.add('Esquerda',[12,13,14,15],5,false);
+        inimigo.animations.add('Baixo',[0,1,2,3],5,false);
         inimigo.enableBody= true;
         //----------------------------------
         
@@ -55,31 +55,33 @@ var stage1State = {
         //inimigo.bounce.set(0.2, 0.2);
         //inimigo.body.drag.set(100, 100);
         //----------------------------------------
-        velocityDifference = 1;
-        binaryGraph = this.createBinaryGraph();
+         velocityDifference = 2;
+         binaryGraph = this.createBinaryGraph();
         finalDestinationX = -1;
         finalDestinationY = -1;
         isPositionCorrectedX = true;
         isPositionCorrectedY = true;
         traversalPosition = 0;
-        traversalGroup = new Array()
+        traversalGroup = new Array();
+        let isMoving = false;
     },
     leftclick:function(){
-        finalDestinationX = Math.floor(Math.floor(player.position.x) / 32);
-        finalDestinationY = Math.floor(Math.floor(player.position.y) / 32);
+        finalDestinationX = Math.floor(Math.floor(player.position.x)/ 32);
+        finalDestinationY = Math.floor(Math.floor(player.position.y)/ 32);
         isPositionCorrectedX = false;
         isPositionCorrectedY = false;
         this.beginAStarMovement();
     },
     update:function(){
-        console.log(inimigo.x,inimigo.y);
+        console.log(inimigo.position.x + ":" + inimigo.position.y);
+        
         this.leftclick();
         
         
         
         game.physics.arcade.collide(inimigo, blockedLayer);
         
-        let isMoving = false;
+        
         
          if ((traversalGroup.length != traversalPosition) && (finalDestinationX != -1)) {
       // console.log("we're iterating through traversal group");
@@ -93,10 +95,10 @@ var stage1State = {
         if (!inimigo.animations.isPlaying) {
           if (traversalGroup[traversalPosition].x * 32 > inimigo.position.x) {
             //console.log('walking right animation');
-            inimigo.animations.play('D');
+            inimigo.animations.play('Direita');
           } else {
             //console.log('walking left animation');
-            inimigo.animations.play('A');
+            inimigo.animations.play('Esquerda');
           }
         }
       }
@@ -107,9 +109,9 @@ var stage1State = {
         this.movePlayerToY(traversalGroup[traversalPosition].y);
         if (!inimigo.animations.isPlaying) {
           if (traversalGroup[traversalPosition].y * 32 > inimigo.position.y) {
-            inimigo.animations.play('S');
+            inimigo.animations.play('Baixo');
           } else {
-            inimigo.animations.play('W');
+            inimigo.animations.play('Cima');
           }
         }
       }
@@ -126,14 +128,6 @@ var stage1State = {
       //inimigo.animations.stop();
     }
     
-        
-        
-        
-        
-        
-        
-        
-        
         if(this.WKey.isDown){
         player.animations.play('walkUp');
         player.y -= 2;
@@ -194,11 +188,12 @@ var stage1State = {
     }
     traversalGroup = astar.search(binaryGraph, start, end);
     if (traversalGroup.length == 0) {
-      alert("Unable to reach that destination");
+      console.log('peguei');
     }
     
 },
     movePlayerToX: function(x) {
+
     // console.log("move player x was called");
     if (((inimigo.position.x - x * 32) <= 16 && (inimigo.position.x - x * 32) >= 0) || ((x * 32 - inimigo.position.x) <= 16 && (x * 32 - inimigo.position.x >= 0))) {
       inimigo.body.velocity.x = 0;
@@ -208,11 +203,11 @@ var stage1State = {
     } else {
       if (inimigo.position.x < x * 32) {
         inimigo.body.velocity.x += velocityDifference;
-        console.log('moving right');
+        //console.log('moving right');
         //this.player = this.playerRight;
       } else if (inimigo.position.x > x * 32) {
         inimigo.body.velocity.x -= velocityDifference;
-        console.log('moving left');
+        //console.log('moving left');
       } else if (inimigo.position.x == x * 32) {
         inimigo.body.velocity.x = 0;
         isPositionCorrectedX = true;
@@ -220,6 +215,7 @@ var stage1State = {
     }
   },
     movePlayerToY: function(y) {
+        
     if (((inimigo.position.y - y * 32) <= 16 && (inimigo.position.y - y * 32) >= 0) || ((y * 32 - inimigo.position.y) <= 16 && (y * 32 - inimigo.position.y >= 0))) {
       inimigo.body.velocity.y = 0;
       inimigo.position.y = Math.round(y * 32);
