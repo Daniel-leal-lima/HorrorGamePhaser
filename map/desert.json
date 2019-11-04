@@ -23,10 +23,12 @@
                  "height":32,
                  "id":3,
                  "name":"",
-                 "properties":
+                 "properties":[
                         {
-                         "type":"enemyStart"
-                        },
+                         "name":"type",
+                         "type":"string",
+                         "value":"enemyStart"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -39,10 +41,12 @@
                  "height":32,
                  "id":4,
                  "name":"",
-                 "properties":
+                 "properties":[
                         {
-                         "type":"playerStart"
-                        },
+                         "name":"type",
+                         "type":"string",
+                         "value":"playerStart"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -67,9 +71,75 @@
          "width":40,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"navmesh",
+         "objects":[
+                {
+                 "height":288,
+                 "id":9,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":225,
+                 "x":0,
+                 "y":0
+                }, 
+                {
+                 "height":31,
+                 "id":12,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":225,
+                 "y":0
+                }, 
+                {
+                 "height":126,
+                 "id":13,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65,
+                 "x":255,
+                 "y":32
+                }, 
+                {
+                 "height":34,
+                 "id":14,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":314,
+                 "x":322,
+                 "y":63
+                }, 
+                {
+                 "height":60,
+                 "id":15,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":255,
+                 "x":384,
+                 "y":2
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":7,
+ "nextlayerid":7,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.4",

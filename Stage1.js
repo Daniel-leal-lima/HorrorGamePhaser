@@ -1,25 +1,28 @@
+
+
 var stage1State = {
     create:function(){
-       
+        
         game.physics.startSystem(Phaser.Physics.ARCADE);
         map = game.add.tilemap('desert');
         map.addTilesetImage('Desert', 'tiles');
         backgroundlayer = map.createLayer('background');
         blockedLayer = map.createLayer('collidables');
     
-        map.setCollisionBetween(32, 32, true, 'collidables');
-        
-        //backgroundlayer.resizeWorld();
-        
-        result = this.findObjectsByType('playerStart', map, 'objectsLayer')
-        result2 = this.findObjectsByType('enemyStart', map, 'objectsLayer')
         
         
-        inimigo = game.add.sprite(result2[0].x+16, result2[0].y,'Player');
+        
+        backgroundlayer.resizeWorld();
+        
+        /*result = this.findObjectsByType('playerStart', map, 'objectsLayer')
+        result2 = this.findObjectsByType('enemyStart', map, 'objectsLayer')*/
+        
+        
+        inimigo = game.add.sprite(10, 10,'Player');
         console.log(inimigo.x,inimigo.y);
         //inimigo.anchor.set(.5);
         inimigo.tint = "#fff";
-        player = game.add.sprite(result[0].x+16, result[0].y-16,'Player');
+        player = game.add.sprite(16, 80,'Player');
         player.anchor.set(.5);
         
         //Jogador
@@ -46,111 +49,167 @@ var stage1State = {
         this.DKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         
         //Câmera e colisão
-        //game.physics.arcade.enable([sprite, sprite2]);
-        game.physics.arcade.enable(player);
-        game.physics.arcade.enable(inimigo);
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        
         game.camera.follow(player);
+        
+        game.physics.enable(player);
+        player.body.setSize(14, 5, 1, 16);
+        
+        game.physics.enable(inimigo);
         player.body.collideWorldBounds = true;
         inimigo.body.collideWorldBounds = true;
-        //inimigo.bounce.set(0.2, 0.2);
-        //inimigo.body.drag.set(100, 100);
-        //----------------------------------------
-         velocityDifference = 2;
-         binaryGraph = this.createBinaryGraph();
+        map.setCollisionBetween(0, 700, true, 'collidables');
+        
+        
+         velocityDifference = 1;
         finalDestinationX = -1;
         finalDestinationY = -1;
         isPositionCorrectedX = true;
         isPositionCorrectedY = true;
         traversalPosition = 0;
         traversalGroup = new Array();
-        let isMoving = false;
+        
+        cursors = game.input.keyboard.createCursorKeys();
+        
+        const navMeshPlugin = this.game.plugins.add(PhaserNavmesh);
+        navMesh = navMeshPlugin.buildMeshFromTiled(map, 'navmesh', 16);//criar uma camada navmesh no nosso projeto
+        navMesh.enableDebug();
+        navMesh.debugDrawMesh({
+        drawCentroid: false, drawBounds: false,
+         drawNeighbors: false, drawPortals: false,
+    });
+        
+        inimigo.body.width = inimigo.body.width / 2;
+        inimigo.body.offset.x += inimigo.body.width / 2;
+        inimigo.body.offset.y += inimigo.body.height;
+        
+        const p1 = new Phaser.Point(window.innerWidth/2, window.innerHeight/2);
+        const p2 = new Phaser.Point(window.innerWidth/2+200, window.innerHeight/2+200);
+        const path = navMesh.findPath(p1, p2, {
+        drawPolyPath: true, drawFinalPath: true,
+            
+         
+    });
+        //mov inimigo
+        let h;
+        let w;
+        let offx;
+        let offy;
+        DIRECTIONS = ['up', 'right', 'down', 'left'];
+        speed = 90;
     },
-    leftclick:function(){
-        finalDestinationX = Math.floor(Math.floor(player.position.x)/ 32);
-        finalDestinationY = Math.floor(Math.floor(player.position.y)/ 32);
-        isPositionCorrectedX = false;
-        isPositionCorrectedY = false;
-        this.beginAStarMovement();
-    },
+    
     update:function(){
+        
+        
+       game.physics.arcade.collide(player, blockedLayer, function(){
+        console.log('collision');
+    });
+            
+            
         console.log(inimigo.position.x + ":" + inimigo.position.y);
         
-        this.leftclick();
-        
-        
-        
-        game.physics.arcade.collide(inimigo, blockedLayer);
-        
-        
-        
-         if ((traversalGroup.length != traversalPosition) && (finalDestinationX != -1)) {
-      // console.log("we're iterating through traversal group");
-      // console.log(this.traversalPosition);
-      // console.log(this.isPositionCorrectedX, this.isPositionCorrectedY);
-      // console.log(this.traversalGroup);
-      if (!isPositionCorrectedX) {
-        isMoving = true;
-        // console.log("moving x to:", this.traversalGroup[this.traversalPosition].x);
-        this.movePlayerToX(traversalGroup[traversalPosition].x);
-        if (!inimigo.animations.isPlaying) {
-          if (traversalGroup[traversalPosition].x * 32 > inimigo.position.x) {
-            //console.log('walking right animation');
-            inimigo.animations.play('Direita');
-          } else {
-            //console.log('walking left animation');
-            inimigo.animations.play('Esquerda');
-          }
-        }
-      }
-         }
-         if (!isPositionCorrectedY) {
-        isMoving = true;
-        // console.log("moving y to:", this.traversalGroup[this.traversalPosition].y);
-        this.movePlayerToY(traversalGroup[traversalPosition].y);
-        if (!inimigo.animations.isPlaying) {
-          if (traversalGroup[traversalPosition].y * 32 > inimigo.position.y) {
-            inimigo.animations.play('Baixo');
-          } else {
-            inimigo.animations.play('Cima');
-          }
-        }
-      }
-      if (isPositionCorrectedX && isPositionCorrectedY) {
-        traversalPosition++;
-        // console.log("incrementing position to: ", this.traversalPosition);
-        if (traversalPosition != traversalGroup.length) {
-          isPositionCorrectedX = false;
-          isPositionCorrectedY = false;
-        }
-      }
-      
-    if (!isMoving) {
-      //inimigo.animations.stop();
-    }
-    
+  
+     player.body.velocity.setTo(0);
         if(this.WKey.isDown){
         player.animations.play('walkUp');
-        player.y -= 2;
+        player.body.velocity.y = -128;
         }
         else if(this.SKey.isDown){
         player.play('walkDown');
-        player.y += 2;
+        player.body.velocity.y = 128;
         }
         else if((this.AKey.isDown)){
         player.play('walkLeft'); 
-            player.x -= 2;
+        player.body.velocity.x = -128;
         }
         else if(this.DKey.isDown){
         player.play('walkRight');
-            player.x += 2;            
+        player.body.velocity.x = 128;           
         }
-        //console.log(map.layers[0].data);
        
-        game.physics.arcade.collide(player,inimigo);
-        
+      
+    //this.gotoXY(player.x+inimigo.body.width / 2 + player.body.offset.x,player.y+player.body.height / 2 + player.body.offset.y, navMesh);//dar uma olhada caso der erro !!!!!
+        this.gotoXY(player.x+player.body.width /
+        2 + player.body.offset.x - 32, player.y+player.body.height /
+        2 + player.body.offset.y + 16, navMesh);
+
        
     },
-    findObjectsByType: function(type, map, layer) {
+    moveInDirection : function(direction, sprint) {
+        let dir = '';
+        if (_.isString(direction) && _.includes(DIRECTIONS, direction)) {
+            dir = direction.toLowerCase();
+ } else if (_.isNumber(direction) && _.inRange(direction, 0, 4)) {
+            dir = DIRECTIONS[direction];
+        } else {
+            console.log(direction);
+            console.error('Invalid direction');
+            return;
+        }
+        switch (dir) {
+            case 'up':
+                inimigo.body.velocity.y = -speed;
+                inimigo.body.velocity.x = 0;
+                inimigo.direction = 'up';
+                break;
+            case 'down':
+                inimigo.body.velocity.y = speed;
+                inimigo.body.velocity.x = 0;
+                inimigo.direction = 'down';
+                break;
+            case 'right':
+                inimigo.body.velocity.x = speed;
+                inimigo.body.velocity.y = 0;
+                inimigo.direction = 'right';
+                break;
+            case 'left':
+                inimigo.body.velocity.x = -speed;
+                inimigo.body.velocity.y = 0;
+                inimigo.direction = 'left';
+                break;
+            default:
+                console.error('Invalid direction');
+                return;
+        }
+        //this.animations.play('walk_' + dir, animSpeed, true);
+        //this.adjustHitbox('walk');
+    
+},
+    // draw the path   
+    findPath : function(start, finish) {
+    navMesh.debugClear(); // Clears the overlay       
+    navMesh.findPath(start, finish, {
+        drawPolyPath: false, drawFinalPath: true,
+    });
+    let path = this.navMesh.findPath(start, finish);
+    return path;
+    },
+    gotoXY : function(x, y, navMesh) {
+    const p2 = new Phaser.Point(x, y);
+    // the entities location, respective to the center of its hit box
+    const trueX = inimigo.x+inimigo.body.width /
+    2 + inimigo.body.offset.x;
+    const trueY = inimigo.y+inimigo.body.height /
+          2 + inimigo.body.offset.y;
+    const p1 = new Phaser.Point(trueX, trueY);
+    // cool library magic
+    const path = navMesh.findPath(p1, p2);
+    /* 0. up
+    *  1. right
+    *  2. down
+    *  3. left
+    */
+    if (path) {
+        // confusing code
+        Math.abs(path[1].x - trueX) >= Math.abs(path[1].y - trueY) ?
+         this.moveInDirection(((path[1].x - trueX < 0)*2)+1, false) :
+          this.moveInDirection((path[1].y - trueY > 0)*2, false);
+    }
+}
+    }
+    /*findObjectsByType: function(type, map, layer) {
     var result = new Array();
     map.objects[layer].forEach(function(element){
       if(element.properties.type === type) {
@@ -162,75 +221,4 @@ var stage1State = {
       }      
     });
     return result;
-  },
-    createBinaryGraph: function() {
-    let binaryGraph = new Array((blockedLayer.layer.data).length);
-    for (let i = 0; i < (blockedLayer.layer.data).length; ++i) {
-      binaryGraph[i] = new Array((blockedLayer.layer.data[i]).length);
-      for (let j = 0; j < (blockedLayer.layer.data[i]).length; ++j) {
-        let collide = 1;
-        if (blockedLayer.layer.data[j][i].collideDown) {
-          collide = 0;
-        }
-        binaryGraph[i][j] = collide;
-      }
-    }
-    return new Graph(binaryGraph);
-  },
-    beginAStarMovement: function() {
-    traversalPosition = 0;
-    let start = binaryGraph.grid[Math.round(inimigo.position.x / 32)][Math.round(inimigo.position.y / 32)];
-    let end;
-    try {
-      end = binaryGraph.grid[finalDestinationX][finalDestinationY];
-    } catch(error) {
-      alert("Unable to reach that destination");
-    }
-    traversalGroup = astar.search(binaryGraph, start, end);
-    if (traversalGroup.length == 0) {
-      console.log('peguei');
-    }
-    
-},
-    movePlayerToX: function(x) {
-
-    // console.log("move player x was called");
-    if (((inimigo.position.x - x * 32) <= 16 && (inimigo.position.x - x * 32) >= 0) || ((x * 32 - inimigo.position.x) <= 16 && (x * 32 - inimigo.position.x >= 0))) {
-      inimigo.body.velocity.x = 0;
-      inimigo.position.x = Math.round(x * 32);
-      isPositionCorrectedX = true;
-      return;
-    } else {
-      if (inimigo.position.x < x * 32) {
-        inimigo.body.velocity.x += velocityDifference;
-        //console.log('moving right');
-        //this.player = this.playerRight;
-      } else if (inimigo.position.x > x * 32) {
-        inimigo.body.velocity.x -= velocityDifference;
-        //console.log('moving left');
-      } else if (inimigo.position.x == x * 32) {
-        inimigo.body.velocity.x = 0;
-        isPositionCorrectedX = true;
-      }
-    }
-  },
-    movePlayerToY: function(y) {
-        
-    if (((inimigo.position.y - y * 32) <= 16 && (inimigo.position.y - y * 32) >= 0) || ((y * 32 - inimigo.position.y) <= 16 && (y * 32 - inimigo.position.y >= 0))) {
-      inimigo.body.velocity.y = 0;
-      inimigo.position.y = Math.round(y * 32);
-      isPositionCorrectedY = true;
-      return;
-    } else {
-      if (inimigo.position.y < y * 32) {
-        inimigo.body.velocity.y += velocityDifference;
-      } else if (inimigo.position.y > y * 32) {
-        inimigo.body.velocity.y -= velocityDifference;
-      } else if (inimigo.position.y == y * 32) {
-       isPositionCorrectedY = true;
-        inimigo.body.velocity.y = 0;
-      }
-    }
-  }
-
-}
+  }*/

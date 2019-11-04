@@ -1,188 +1,166 @@
-var GameHipster = GameHipster || {};
+'use strict';
 
-GameHipster.GameState = {
+const Player = require('../entity/Player');
 
-  init : function() {
-    //keyboard controls
-    this.cursors = this.game.input.keyboard.createCursorKeys();
-    this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-    this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-    this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+let Play = {};
 
-    this.PLAYER_SPEED = 400;
-    this.ENEMY_SPEED = 400;
+Play.init = function() {
 
-  }, // end init
+};
 
-  preload : function() {
+Play.create = function() {
+    // Anand did this part. I don't even know.
+    this.map = game.add.tilemap('map1');
+    this.map.addTilesetImage('outdoors', 'tileset');
+    this.bgLayer = this.map.createLayer('bgLayer');
+    this.bgOverlap = this.map.createLayer('bgOverlap');
+    this.bgOverlap2 = this.map.createLayer('bgOverlap2');
+    this.blockOverlap = this.map.createLayer('blkOverlap');
+    this.blockLayer = this.map.createLayer('blkLayer');
+    this.game.add.existing(this.blockLayer);
+    this.map.setCollisionBetween(1, 10000, true, this.blockLayer);
+    this.map.setCollisionBetween(1, 10000, true, this.blockOverlap);
+    this.blockLayer.resizeWorld();
+    this.bgLayer.resizeWorld();
 
-  },//end preload
+    const navMeshPlugin = this.game.plugins.add(PhaserNavmesh);
+    const navMesh = navMeshPlugin.buildMeshFromTiled(this.map, 'navmesh', 12.5);
+    navMesh.enableDebug();
+    navMesh.debugDrawMesh({
+        drawCentroid: true, drawBounds: false,
+         drawNeighbors: true, drawPortals: true,
+    });
 
-  //executed after everything is loaded
-  create: function() {
-    // create a basic map
-    blockdata = [
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,1,0,0,1,1,0,1,1,1,0,1,0,1],
-      [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
-      [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,1,0,1,1,1,0,1,1,1,0,0,0,1],
-      [1,0,1,0,1,1,1,0,1,1,1,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    ];
-    this.blocks = this.add.group();
-    this.blocks.enableBody = true;
-    this.floors = this.add.group();
-    this.floors.enableBody = true;
+    // Input for game
+    this.keyboard = game.input.keyboard;
 
-    var floor, block, i, j, col;
-    var ROWS = blockdata.length;
-    var COLS = blockdata[0].length;
+    /**
+     * Create the Player, setting location and naming as 'player'.
+     * Giving him Physics and allowing collision with the world boundaries.
+     */
+    this.player = new Player(window.innerWidth/2, window.innerHeight/2, 'player');
 
-    for (i =0; i < COLS; i++) {
-          for (j =0; j < ROWS; j++){
-            //get block co-ordinates
-            col = (blockdata[j][i]);
+    // Creating the enemy. Same procedure for as the player.
+    this.enemy = game.add.sprite(window.innerWidth - 50, window.innerHeight/2 + 50, 'enemy');
+    game.physics.enable(this.enemy, Phaser.Physics.ARCADE);
+    this.enemy.body.collideWorldBounds = true;
+    this.enemy.animations.add('walk4', [118, 119, 120, 121, 122, 123, 124, 125], 10, true);
+    this.enemy.animations.add('walk1', [105, 106, 107, 108, 109, 110, 111, 112], 10, true);
+    this.enemy.animations.add('walk3', [131, 132, 133, 134, 135, 136, 137, 138], 10, true);
+    this.enemy.animations.add('walk2', [144, 145, 146, 147, 148, 149, 150, 151], 10, true);
+    this.enemy.animations.add('lay', [260, 261, 262, 263, 264], 10, true);
+    this.enemy.frame = 134;
+    this.enemy.body.height = this.enemy.body.height / 2; // Changing the size of the hitbox
+    this.enemy.body.width = this.enemy.body.width / 2;
+    this.enemy.body.offset.x += this.enemy.body.width / 2;
+    this.enemy.body.offset.y += this.enemy.body.height;
+    this.game.camera.follow(this.player);
+};
 
-            if (col ==0){ // if data = 0 show a floor tile
-              floor = this.floors.create( 1 + (i*64),1 +(j*64), 'block' + col);
-              floor.anchor.setTo(0.5);
-            }
+let newDirection = 0;
+Play.update = function() {
+    // Displays the hitbox for the Player
+    //this.game.debug.body(this.player);
 
-            if (col ==1){ // if data = 0 show a block tile
-              block = this.blocks.create( 1 + (i*64),1 +(j*64), 'block' + col);
-              block.anchor.setTo(0.5);
-              block.body.immovable =true;
-            }
+    // ================================================================================== 
+    // NOTE: Directions are numbered 1-4, where Direction 1 is "Up", Direction 2 is 
+    // "Right", and continuing clockwise about the Player ending at Direction 4, which is "Left".
+    // ==================================================================================
+    // ==================================================================================
+    // MORE NOTE: The upcoming code is for the behavior of the NPC only. Code for the 
+    // Player is organized after the NPC code.
+    // ==================================================================================
+    let enemySpeed = 0;
 
-          }// end j loop
-
-    }; // end i loop
-
-    this.player = this.add.sprite(770, 370, 'player');
-    this.player.anchor.setTo(0.5);
-    this.player.scale.setTo(0.8);
-    this.game.physics.arcade.enable(this.player);
-
-    this.enemies = this.add.group(); //add enemies group
-    this.enemies.enableBody = true;
-
-    var enemyData = [
-      {"x" : 70, "y" : 70, "key" : "enemy"},
-      {"x" : 750, "y" : 440, "key" : "enemy"}
-    ];
-
-    //add enemies to game
-    enemyData.forEach(function(element){
-      this.enemy = this.enemies.create(element.x, element.y, element.key);
-      this.enemy.scale.setTo(0.7);
-      this.enemy.anchor.setTo(0.5);
-    }, this);
-
-    //set a timer that will move an enemy after 5 seconds if he can't see you
-    this.game.time.events.loop(Phaser.Timer.SECOND * 5 , this.moveMonster, this);
-    //start movement
-    this.moveMonster()
-
-  },
-  //executed multiple times per second
-
-  update: function() {
-    //stop player moving if keyboard is not been used
-    this.player.body.velocity.x = 0;
-    this.player.body.velocity.y = 0;
-    //check collisom
-    this.game.physics.arcade.collide(this.player, this.blocks);
-    this.game.physics.arcade.collide(this.enemies, this.blocks);
-    //check keyboard
-    this.keyboardControls();
-    //start chase
-    this.chaseMe();
-  }, // end update
-
-  keyboardControls : function(){
-    //init keyboard controls
-    if (this.cursors.left.isDown|| this.leftKey.isDown){
-      this.player.body.velocity.x = -this.PLAYER_SPEED;
-    }else
-    if (this.cursors.right.isDown || this.rightKey.isDown){
-       //this.player.angle -= 5;
-       this.player.body.velocity.x = this.PLAYER_SPEED;
-    } else
-    if (this.cursors.up.isDown || this.upKey.isDown){
-      //thrust
-      this.player.body.velocity.y = -this.PLAYER_SPEED;
-    } else
-    if (this.cursors.down.isDown || this.downKey.isDown){
-      //thrust
-      this.player.body.velocity.y = this.PLAYER_SPEED;
+    let rand = 3;
+    rand = Math.round(Math.random() * 50) + 1; // This value is used to calculate the NPC's decision to change
+    if (rand === 1) {							// directions. According to this, 1 out of 1000 chance. Direction
+        rand = Math.round(Math.random() * 4); // 0 (stationary) is a valid direction here. NPC can stop if he decides to.
+        // newDirection = rand;
     }
 
-  },// end function
+    // This block handles what happens when the NPC hits walls, whether one at a time or in corners.
+    // When the PNC hits a wall, a new number is generated in the range of viable directions that 
+    // the NPC could choose. If the random number needs to go over 8, we subtract 8 to account for 
+    // the 1-8 direction system.
+    if (this.enemy.body.blocked.up === true) newDirection = 3;
+    else if (this.enemy.body.blocked.down === true) newDirection = 1;
+    else if (this.enemy.body.blocked.left === true) newDirection = 2;
+    else if (this.enemy.body.blocked.right === true) newDirection = 4;
 
-  moveMonster : function(){
-    this.enemies.forEach(function(el){
+    this.enemy.direction = newDirection;
+    // This block handles the movement of the NPC as well as its animation once the
+    // direction has been determined.
 
-      var randMove = Math.floor(Math.random()* 4 +1);
-      if (randMove == 1){
-        el.body.velocity.x = 200;
-      } else
-      if (randMove == 2){
-        el.body.velocity.x = -200;
-      } else
-      if (randMove == 3){
-        el.body.velocity.y = 200;
-      } else
-      if (randMove == 4){
-        el.body.velocity.y = -200;
-      }
+    switch (newDirection) {
+        case 0: // Not moving
+            this.enemy.animations.stop(null, true);
+            this.enemy.body.velocity.x = 0;
+            this.enemy.body.velocity.y = 0;
+            this.enemy.frame = 134;
+            break;
+        case 1: // Straight Up
+            this.enemy.animations.play('walk1', 20, true);
+            this.enemy.body.velocity.y = -enemySpeed;
+            this.enemy.body.velocity.x = 0;
+            break;
+        case 2: // Straight Right
+            this.enemy.animations.play('walk2', 20, true);
+            this.enemy.body.velocity.x = enemySpeed;
+            this.enemy.body.velocity.y = 0;
+            break;
+        case 3: // Straight Down
+            this.enemy.animations.play('walk3', 20, true);
+            this.enemy.body.velocity.y = enemySpeed;
+            this.enemy.body.velocity.x = 0;
+            break;
+        case 4: // Straight Left
+            this.enemy.animations.play('walk4', 20, true);
+            this.enemy.body.velocity.x = -enemySpeed;
+            this.enemy.body.velocity.y = 0;
+            break;
+    }
 
-    }, this);
+    // Intersection for NPC
+    this.game.physics.arcade.collide(this.enemy, this.blockLayer);
+    this.game.physics.arcade.collide(this.enemy, this.blockOverlap);
 
-  },
 
-  chaseMe : function() {
-    //lets assume 10 pixels difference if needed
-    var diffPlusX = this.player.x + 10; // line of sight at 10 pixels high on x
-    var diffMinusX = this.player.x - 10; // line of sight at -10 pixels high on x
-    var diffPlusY = this.player.y + 10; // line of sight at 10 pixels high on y
-    var diffMinusY = this.player.y - 10; // line of sight at -10 pixels high on y
-    var howClose = 130; // how close is does the enemy start chaing you
+    // ========================================================================================
+    //* **
+    // THIS IS NOW THE CONTROLS FOR THE PLAYER
+    //* **
+    // ========================================================================================
 
-    this.enemies.forEach(function(el){ //loop enemies group
+    // SHIFT for running
+    let sprint = false;
+    if ( this.keyboard.isDown(Phaser.Keyboard.SHIFT)) {
+      sprint = true;
+    }
 
-      if (Math.floor(el.y) == (Math.floor(this.player.y))
-      || Math.floor(el.y) < (Math.floor(diffPlusY))
-      && Math.floor(el.y) > (Math.floor(diffMinusY))){
-         // in the line of sight on horizontal line
-             if (this.player.x > el.x + howClose){
-              el.body.velocity.x = this.ENEMY_SPEED;
-              el.body.velocity.y = 0; // remove this if you want enemy chanse diagonal
-            } else
-            if (this.player.x < el.x - howClose)
-            {
-              el.body.velocity.x = -this.ENEMY_SPEED;
-              el.body.velocity.y = 0; // remove this if you want enemy chanse diagonal
-            }
-      }
-      if (Math.floor(el.x) == (Math.floor(this.player.x))
-      || Math.floor(el.x) < (Math.floor(diffPlusX))
-      && Math.floor(el.x) > (Math.floor(diffMinusX))){
-        // in the line of sight on vertical line
-            if (this.player.y > el.y + howClose){
-              el.body.velocity.y = this.ENEMY_SPEED;
-              el.body.velocity.x = 0
-            } else
-            if (this.player.y < el.y - howClose)
-            {
-              el.body.velocity.y = -this.ENEMY_SPEED;
-              el.body.velocity.x = 0
-            }
-      }
+    if ( this.keyboard.isDown(Phaser.Keyboard.W)) {
+        this.player.moveInDirection('up', sprint);
+    } else if ( this.keyboard.isDown(Phaser.Keyboard.S)) {
+        this.player.moveInDirection('down', sprint);
+    } else if ( this.keyboard.isDown(Phaser.Keyboard.A)) {
+        this.player.moveInDirection('left', sprint);
+    } else if ( this.keyboard.isDown(Phaser.Keyboard.D)) {
+        this.player.moveInDirection('right', sprint);
+    } else {
+        this.player.idleHere();
+    }
 
-    }, this); // end foreach loop
+    // Deciding which character to render on top of the other.
+    if ((this.player.y + this.player.height) > (this.enemy.y + this.enemy.height)) {
+        this.game.world.bringToTop(this.player);
+    } else {
+	this.game.world.bringToTop(this.enemy);
+	}
 
-  },
+    // Intersection for Player
+    this.game.physics.arcade.collide(this.player, this.blockLayer);
+    this.game.physics.arcade.collide(this.player, this.blockOverlap);
+};
+
+
+module.exports = Play;
