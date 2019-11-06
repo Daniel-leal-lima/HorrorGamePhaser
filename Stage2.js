@@ -1,1 +1,0 @@
-var stage2State = {}
