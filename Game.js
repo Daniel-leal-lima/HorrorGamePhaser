@@ -17,9 +17,10 @@ var BootScene = new Phaser.Class({
         
         // map in json format
         this.load.tilemapTiledJSON("desert", "map/desert.json");
-        
+        this.load.image('mask', 'img/mask1.png');
         // our two characters
         this.load.spritesheet('player', 'img/Personagem.png', { frameWidth: 16, frameHeight: 32 });
+        this.load.spritesheet('principal', 'img/Player.png', { frameWidth: 40, frameHeight: 40 });
 
     },
  
@@ -48,23 +49,27 @@ var WorldScene = new Phaser.Class({
         // create your world here
         var map = this.make.tilemap({ key: 'desert' });
         var tiles = map.addTilesetImage('Desert', 'tiles');
+        var tiles = map.addTilesetImage('Desert', 'tiles');
         var fundoLayer = map.createStaticLayer('background', tiles, 0, 0);
         var objLayer = map.createStaticLayer('collidables', tiles, 0, 0);
+         this.spotlight = this.make.sprite({
+        x: 400,
+        y: 300,
+        key: 'mask',
+        add: false});
         
-        
-        
-        
-        
-        
+        fundoLayer.mask = new Phaser.Display.Masks.BitmapMask(this, this.spotlight);
+        //objLayer.mask = new Phaser.Display.Masks.BitmapMask(this, this.spotlight);
+                
         //--------------------NAVMESH ------------------
         const objectLayer = map.getObjectLayer("navmesh");
         navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
         navMesh.enableDebug();
-        navMesh.debugDrawMesh({
-        drawCentroid: false, drawBounds: false,
-         drawNeighbors: false, drawPortals: false,
-    });
+//        navMesh.debugDrawMesh({
+//        drawCentroid: false, drawBounds: false,
+//         drawNeighbors: false, drawPortals: false,
+//    });
         
         //mov inimigo
         let h;
@@ -100,46 +105,41 @@ var WorldScene = new Phaser.Class({
         
         //------------------------------------------
         
-        this.player = this.physics.add.sprite(50, 100, 'player', 0);
+        this.player = this.physics.add.sprite(50, 100, 'principal', 0);
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);//editar para ficar no tamanho de um quarto apenas-- kiyoshi
         //movimentação Personagem
         this.cursors = this.input.keyboard.createCursorKeys();
         
-        //this.cameras.main.setZoom(1);
+        this.cameras.main.setZoom(2);
         
         
         this.cameras.main.startFollow(this.player);
         //this.cameras.main.roundPixels = true;
         //ANIM
-         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('player', { frames: [12,13,14,15]}),
-            frameRate: 10,
-            repeat: -1
-        });
         
         // animation with key 'right'
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('player', { frames: [4,5,6,7] }),
+            frames: this.anims.generateFrameNumbers('principal', { frames: [1,9,17,25] }),
             frameRate: 10,
             repeat: -1
         });
         this.anims.create({
             key: 'up',
-            frames: this.anims.generateFrameNumbers('player', { frames: [8,9,10,11]}),
+            frames: this.anims.generateFrameNumbers('principal', { frames: [7,15,23,31]}),
             frameRate: 10,
             repeat: -1
         });
         this.anims.create({
             key: 'down',
-            frames: this.anims.generateFrameNumbers('player', { frames: [ 0,1,2,3 ] }),
+            frames: this.anims.generateFrameNumbers('principal', { frames: [4,12,20,28  ] }),
             frameRate: 10,
             repeat: -1
         });
         
     this.physics.add.collider(this.player, this.objLayer);
         
+       
         
         
     },
@@ -211,21 +211,29 @@ var WorldScene = new Phaser.Class({
         }
         //this.animations.play('walk_' + dir, animSpeed, true);
         //this.adjustHitbox('walk');
+        
+          
     
 },
     update:function(){
+        
+       
         this.player.body.setVelocity(0);
+        this.spotlight.x = this.player.x;
+            this.spotlight.y = this.player.y;
  
         // Horizontal movement
         if (this.cursors.left.isDown)
         {
             this.player.body.setVelocityX(-150);
-             this.player.anims.play('left', true);
+             this.player.anims.play('right', true);
+            this.player.setFlipX(true);
         }
         else if (this.cursors.right.isDown)
         {
             this.player.body.setVelocityX(150);
             this.player.anims.play('right', true);
+            this.player.setFlipX(false);
         }
  
         // Vertical movement
@@ -244,6 +252,8 @@ var WorldScene = new Phaser.Class({
         this.gotoXY(this.player.x+this.player.body.width /
         2 + this.player.body.offset.x - 32, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y + 16, navMesh);
+        
+        
     }
 });
  
