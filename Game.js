@@ -52,14 +52,15 @@ var WorldScene = new Phaser.Class({
         var tiles = map.addTilesetImage('Desert', 'tiles');
         var fundoLayer = map.createStaticLayer('background', tiles, 0, 0);
         var objLayer = map.createStaticLayer('collidables', tiles, 0, 0);
-         this.spotlight = this.make.sprite({
-        x: 400,
-        y: 300,
+         spotlight = this.make.sprite({
+        x: 300,
+        y: 225,
+        scale: 3,
         key: 'mask',
         add: false});
-        
-        fundoLayer.mask = new Phaser.Display.Masks.BitmapMask(this, this.spotlight);
-        //objLayer.mask = new Phaser.Display.Masks.BitmapMask(this, this.spotlight);
+        var mask = spotlight.createBitmapMask();
+        //fundoLayer.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
+        //objLayer.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
                 
         //--------------------NAVMESH ------------------
         const objectLayer = map.getObjectLayer("navmesh");
@@ -105,16 +106,20 @@ var WorldScene = new Phaser.Class({
         
         //------------------------------------------
         
-        this.player = this.physics.add.sprite(50, 100, 'principal', 0);
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);//editar para ficar no tamanho de um quarto apenas-- kiyoshi
+        player = this.physics.add.sprite(400, 100, 'principal', 0);
+        
+        //apenas-- kiyoshi
         //movimentação Personagem
         this.cursors = this.input.keyboard.createCursorKeys();
         
+        //this.cameras.main.setZoom(2);
+        this.cameras.main.setMask(mask);
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);//editar para ficar no tamanho de um quarto 
+         this.cameras.main.startFollow(player);
         this.cameras.main.setZoom(2);
-        
-        
-        this.cameras.main.startFollow(this.player);
+        //this.cameras.main.startFollow(player);
         //this.cameras.main.roundPixels = true;
+        
         //ANIM
         
         // animation with key 'right'
@@ -137,7 +142,7 @@ var WorldScene = new Phaser.Class({
             repeat: -1
         });
         
-    this.physics.add.collider(this.player, this.objLayer);
+    this.physics.add.collider(player, this.objLayer);
         
        
         
@@ -211,47 +216,44 @@ var WorldScene = new Phaser.Class({
         }
         //this.animations.play('walk_' + dir, animSpeed, true);
         //this.adjustHitbox('walk');
-        
-          
-    
 },
     update:function(){
         
-       
-        this.player.body.setVelocity(0);
-        this.spotlight.x = this.player.x;
-            this.spotlight.y = this.player.y;
+       //console.log('PLayer :' + player.x + "/ " + player.y);
+        //console.log('Mask :' + spotlight.x + "/ " + spotlight.y);
+        player.body.setVelocity(0);
  
         // Horizontal movement
         if (this.cursors.left.isDown)
         {
-            this.player.body.setVelocityX(-150);
-             this.player.anims.play('right', true);
-            this.player.setFlipX(true);
+            player.body.setVelocityX(-150);
+             player.anims.play('right', true);
+            player.setFlipX(true);
+            
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.body.setVelocityX(150);
-            this.player.anims.play('right', true);
-            this.player.setFlipX(false);
+            player.body.setVelocityX(150);
+            player.anims.play('right', true);
+            player.setFlipX(false);
         }
  
         // Vertical movement
         else if (this.cursors.up.isDown)
         {
-            this.player.body.setVelocityY(-150);
-            this.player.anims.play('up', true);
+            player.body.setVelocityY(-150);
+            player.anims.play('up', true);
         }
         else if (this.cursors.down.isDown)
         {
-            this.player.body.setVelocityY(150);
-            this.player.anims.play('down', true);
+            player.body.setVelocityY(150);
+            player.anims.play('down', true);
         } 
         
         //segue
-        this.gotoXY(this.player.x+this.player.body.width /
-        2 + this.player.body.offset.x - 32, this.player.y+this.player.body.height /
-        2 + this.player.body.offset.y + 16, navMesh);
+        this.gotoXY(player.x+player.body.width /
+        2 + player.body.offset.x - 32, player.y+player.body.height /
+        2 + player.body.offset.y + 16, navMesh);
         
         
     }
