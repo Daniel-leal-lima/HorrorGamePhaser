@@ -5,8 +5,45 @@
     <script src="phaser/phaser.min.js"></script>
     <script src="lib/phaser-navmesh.min.js"></script>
     <script src="lib/lodash.js"></script>
+    <style>
+        body {
+            background: #000000fa;
+        }
+        canvas {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 0;
+            padding-right: 0; }
+    </style>
     
-    <script src="Game.js" ></script>
+    <!--<script src="Game.js" ></script>-->
+    <script src="gameConfig.js"></script>
+    <script src="level.js"></script>
+    <script src="Player.js"></script>
+    <script src="Enemy.js"></script>
+<script>
+
+        /**
+         * Class representing the game object (https://photonstorm.github.io/phaser3-docs/Phaser.Game.html).
+         * @extends Phaser.Game
+         */
+        class Game extends Phaser.Game {
+
+            /**
+             * Create the player.
+             * @param {object} config - Phaser game config.
+             */
+            constructor(config) {
+                super(config);
+                this.scene.add('jogo', Jogo, true);
+            }
+        }
+
+        // Start the game.
+        let game = new Game(config);
+
+    </script>
    
     
 </head>
