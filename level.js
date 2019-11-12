@@ -25,8 +25,10 @@ class Jogo extends Phaser.Scene {
         });
 
         // Level tiles and data.
-        this.load.image("tiles", "map/dungeon_tiles_2.png");
-        this.load.tilemapTiledJSON("level-1", "map/level-1.json");
+        this.load.image("tile1", "map/Tile1.png");
+        this.load.image("tile2", "map/floor.png");
+        this.load.image("tile3", "map/base_out_atlas.png");
+        this.load.tilemapTiledJSON("level-1", "map/mapa32.json");
         this.load.image('mask', 'img/mask1.png');
 
     }
@@ -38,12 +40,14 @@ class Jogo extends Phaser.Scene {
         this.map = this.make.tilemap({key: "level-1"});
 
         // Define tiles used in map.
-        const tileset = this.map.addTilesetImage("dungeon_tiles_2",  "tiles", 16, 16); 
+        const tileset1 = this.map.addTilesetImage("Tile1", "tile1"); 
+        const tileset2 = this.map.addTilesetImage("floor", "tile2"); 
+        const tileset3 = this.map.addTilesetImage("base_out_atlas", "tile3"); 
         
         // The map layers.
-        this.floorLayer = this.map.createStaticLayer("floor",        tileset);
-        this.wallsLayer = this.map.createStaticLayer("walls",        tileset);
-        this.aboveLayer = this.map.createStaticLayer("above_player", tileset);
+        this.floorLayer = this.map.createStaticLayer("chao", [tileset1,tileset2,tileset3]);
+        this.wallsLayer = this.map.createStaticLayer("grama", [tileset1,tileset2,tileset3]);
+        this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
         
         
         
@@ -66,11 +70,11 @@ class Jogo extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Collisions based on layer.
-        this.wallsLayer.setCollisionByProperty({collides: true});
+        //this.aboveLayer.setCollisionByProperty({collides: true});
+        this.aboveLayer.setCollisionBetween(0, 700); 
 
         // Set the above player layer higher than everything else.
-        this.aboveLayer.setDepth(10)
-        ;
+        //this.aboveLayer.setDepth(10);
 
         // Setup things in this level.
         this.rooms = [];
@@ -85,9 +89,9 @@ class Jogo extends Phaser.Scene {
             }
 
             // stairs
-            if (object.name === 'Stairs') {
-                this.stairs.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
-            }
+            //if (object.name === 'Stairs') {
+            //    this.stairs.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
+            //}
 
             // spawn points
             if (object.type === 'Spawn') {
@@ -104,7 +108,7 @@ class Jogo extends Phaser.Scene {
         }, this);
 
         // Add collisions.
-        this.physics.add.collider(this.player,  this.wallsLayer);
+        this.physics.add.collider(this.player,  this.aboveLayer);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
         this.physics.add.overlap(this.player,   this.stairs,     function() {
             this.player.onStairs = true;
@@ -124,6 +128,7 @@ class Jogo extends Phaser.Scene {
 
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
+
         // Listener for gamepad detection.
         this.input.gamepad.once('down', function (pad, button, index) {
             this.gamepad = pad;
@@ -140,7 +145,7 @@ class Jogo extends Phaser.Scene {
         
         
         
-         let h;
+        let h;
         let w;
         let offx;
         let offy;
