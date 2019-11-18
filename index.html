@@ -22,6 +22,7 @@
     <script src="level.js"></script>
     <script src="Player.js"></script>
     <script src="Enemy.js"></script>
+    <script src="Pause.js"></script>
 <script>
 
         /**
@@ -29,7 +30,6 @@
          * @extends Phaser.Game
          */
         class Game extends Phaser.Game {
-
             /**
              * Create the player.
              * @param {object} config - Phaser game config.
@@ -37,6 +37,7 @@
             constructor(config) {
                 super(config);
                 this.scene.add('jogo', Jogo, true);
+                this.scene.add('pause', Pause, false);//adiciona cena
             }
         }
 

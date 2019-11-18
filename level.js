@@ -23,13 +23,13 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
-
         // Level tiles and data.
         this.load.image("tile1", "map/Tile1.png");
         this.load.image("tile2", "map/floor.png");
         this.load.image("tile3", "map/base_out_atlas.png");
         this.load.tilemapTiledJSON("level-1", "map/mapa32.json");
         this.load.image('mask', 'img/mask1.png');
+        this.load.image('ab', 'img/ab.png');
 
     }
 
@@ -56,11 +56,11 @@ class Jogo extends Phaser.Scene {
          const objectLayer = this.map.getObjectLayer("navmesh");
          this.navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
-        this.navMesh.enableDebug();
-        this.navMesh.debugDrawMesh({
+        //this.navMesh.enableDebug();
+       /* this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
-    });
+    });*/
         
         
         
@@ -79,6 +79,7 @@ class Jogo extends Phaser.Scene {
         // Setup things in this level.
         this.rooms = [];
         this.stairs = this.physics.add.group();
+        this.poit = this.physics.add.group();//ponto de interesse.
 
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
@@ -92,7 +93,16 @@ class Jogo extends Phaser.Scene {
             //if (object.name === 'Stairs') {
             //    this.stairs.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
             //}
-
+            
+            
+            
+            //poit
+            if (object.name === 'poit') {
+                this.poit.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
+            }
+            
+            
+            
             // spawn points
             if (object.type === 'Spawn') {
                 if (object.name === 'Player') {
@@ -110,8 +120,8 @@ class Jogo extends Phaser.Scene {
         // Add collisions.
         this.physics.add.collider(this.player,  this.aboveLayer);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
-        this.physics.add.overlap(this.player,   this.stairs,     function() {
-            this.player.onStairs = true;
+        this.physics.add.overlap(this.player,   this.poit,     function() {
+            this.player.onPoit = true;
         }, null, this);
 
         // start camera
@@ -151,6 +161,8 @@ class Jogo extends Phaser.Scene {
         let offy;
         this.DIRECTIONS = ['up', 'right', 'down', 'left'];
         this.speed = 90;
+        
+        this.ado = this.input.keyboard.addKeys('P,I');
     }
 
     /** Update called every tick. */
@@ -191,7 +203,10 @@ class Jogo extends Phaser.Scene {
         this.gotoXY(this.player.x+this.player.body.width /
         2 + this.player.body.offset.x - 32, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y + 16, this.navMesh);
-        
+        if(this.ado.P.isDown){
+            this.scene.pause();
+            this.scene.launch('pause');
+        }
     }
 
     roomStart(roomNumber) {

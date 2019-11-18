@@ -34,6 +34,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.lastAnim = null;﻿
         this.vel = 100;
         this.onStairs = false;
+        this.onPoit = false;
         this.direction = 'down';
 
         config = {
@@ -84,7 +85,9 @@ class Player extends Phaser.GameObjects.Sprite {
             repeat: -1
         };
         scene.anims.create(config);
-
+        
+        this.sprite1 = this.scene.add.image(this.x, this.y - 10, 'ab');
+        this.sprite1.setVisible(false);
     }
 
     /**
@@ -94,7 +97,16 @@ class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-
+        
+        
+        this.sprite1.x = this.x + 4.5;
+        this.sprite1.y = this.y - 10;
+        
+        
+        
+    
+        
+        
         // movement and animation
         this.body.setVelocity(0);
         let animationName = null;
@@ -103,7 +115,8 @@ class Player extends Phaser.GameObjects.Sprite {
         let currentDirection = this.direction;
         if (this.direction === 'left') { currentDirection = 'right'; } //account for flipped sprite
         animationName ﻿= 'stand-' + currentDirection;
-
+        
+    
         // all the ways the player can move.
         let left  = this.keys.A.isDown || this.keys.LEFT.isDown  || this.scene.gamepad && this.scene.gamepad.left;
         let right = this.keys.D.isDown || this.keys.RIGHT.isDown || this.scene.gamepad && this.scene.gamepad.right;
@@ -146,6 +159,15 @@ class Player extends Phaser.GameObjects.Sprite {
             this.onStairs = false;
         } else {
             this.vel = 200;
+        }
+        
+        // Ponto de interesse
+        if (this.onPoit) {
+            this.sprite1.setVisible(true);
+            this.onPoit = false;
+        } else {
+            //sumir com o sprite
+           this.sprite1.setVisible(false);
         }
 
         // diagnoal movement
