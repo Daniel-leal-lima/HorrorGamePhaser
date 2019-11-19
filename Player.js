@@ -29,9 +29,17 @@ class Player extends Phaser.GameObjects.Sprite {
         this.body.setCollideWorldBounds(true);
         this.body.setOffset(16, 31);
         this.body.setCircle(4);
-        this.keys = scene.input.keyboard.addKeys('W,S,A,D,UP,LEFT,RIGHT,DOWN,SPACE');
+        //this.keys = scene.input.keyboard.addKeys('W,S,A,D,UP,LEFT,RIGHT,DOWN,SPACE');
+        this.Key_W = scene.input.keyboard.addKey('W');
+        this.Key_S = scene.input.keyboard.addKey('S');
+        this.Key_A = scene.input.keyboard.addKey('A');
+        this.Key_D = scene.input.keyboard.addKey('D');
+        this.Key_UP = scene.input.keyboard.addKey('UP');
+        this.Key_LEFT = scene.input.keyboard.addKey('LEFT');
+        this.Key_RIGHT = scene.input.keyboard.addKey('RIGHT');
+        this.Key_DOWN = scene.input.keyboard.addKey('DOWN');
 
-        this.lastAnim = null;﻿
+        this.lastAnim = null;
         this.vel = 100;
         this.onStairs = false;
         this.onPoit = false;
@@ -88,6 +96,10 @@ class Player extends Phaser.GameObjects.Sprite {
         
         this.sprite1 = this.scene.add.image(this.x, this.y - 10, 'ab');
         this.sprite1.setVisible(false);
+        
+        scene.events.on('resume', function () {
+            this.reseta_Pause();
+        },this)
     }
 
     /**
@@ -97,16 +109,10 @@ class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        
-        
+            
         this.sprite1.x = this.x + 4.5;
         this.sprite1.y = this.y - 10;
-        
-        
-        
     
-        
-        
         // movement and animation
         this.body.setVelocity(0);
         let animationName = null;
@@ -114,14 +120,13 @@ class Player extends Phaser.GameObjects.Sprite {
         // standing
         let currentDirection = this.direction;
         if (this.direction === 'left') { currentDirection = 'right'; } //account for flipped sprite
-        animationName ﻿= 'stand-' + currentDirection;
+        animationName = 'stand-' + currentDirection;
         
-    
         // all the ways the player can move.
-        let left  = this.keys.A.isDown || this.keys.LEFT.isDown  || this.scene.gamepad && this.scene.gamepad.left;
-        let right = this.keys.D.isDown || this.keys.RIGHT.isDown || this.scene.gamepad && this.scene.gamepad.right;
-        let up    = this.keys.W.isDown || this.keys.UP.isDown    || this.scene.gamepad && this.scene.gamepad.up;
-        let down  = this.keys.S.isDown || this.keys.DOWN.isDown  || this.scene.gamepad && this.scene.gamepad.down;
+        let left  = this.Key_A.isDown || this.Key_LEFT.isDown  || this.scene.gamepad && this.scene.gamepad.left;
+        let right = this.Key_D.isDown || this.Key_RIGHT.isDown || this.scene.gamepad && this.scene.gamepad.right;
+        let up    = this.Key_W.isDown || this.Key_UP.isDown    || this.scene.gamepad && this.scene.gamepad.up;
+        let down  = this.Key_S.isDown || this.Key_DOWN.isDown  || this.scene.gamepad && this.scene.gamepad.down;
 
         if (this.canMove) {
             // moving
@@ -214,4 +219,19 @@ class Player extends Phaser.GameObjects.Sprite {
             this.roomChange = false;
         }
     }
+    reseta_Pause(){
+           this.Key_W.reset();
+           this.Key_UP.reset();
+        
+           this.Key_S.reset();
+           this.Key_DOWN.reset();
+           
+           this.Key_A.reset();
+           this.Key_LEFT.reset();
+           
+           this.Key_D.reset();
+           this.Key_RIGHT.reset();
+        
+    }
+    
 }

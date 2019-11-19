@@ -152,9 +152,6 @@ class Jogo extends Phaser.Scene {
         var mask = spotlight.createBitmapMask();
         this.cameras.main.setMask(mask);
        
-        
-        
-        
         let h;
         let w;
         let offx;
@@ -162,7 +159,15 @@ class Jogo extends Phaser.Scene {
         this.DIRECTIONS = ['up', 'right', 'down', 'left'];
         this.speed = 90;
         
-        this.ado = this.input.keyboard.addKeys('P,I');
+        //this.ado = this.input.keyboard.addKeys('P,I');
+        this.pausado = false;
+        this.keyObj = this.input.keyboard.addKey('P');
+        this.keyObj.on('down', function(event){
+             this.scene.launch('pause');
+            this.scene.pause();
+        },this);
+        this.events.on('resume', function () {
+        },this)
     }
 
     /** Update called every tick. */
@@ -203,10 +208,10 @@ class Jogo extends Phaser.Scene {
         this.gotoXY(this.player.x+this.player.body.width /
         2 + this.player.body.offset.x - 32, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y + 16, this.navMesh);
-        if(this.ado.P.isDown){
-            this.scene.pause();
+       /* if(this.ado.P.isDown){
             this.scene.launch('pause');
-        }
+            this.scene.pause();
+        }*/
     }
 
     roomStart(roomNumber) {
