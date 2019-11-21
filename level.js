@@ -30,6 +30,7 @@ class Jogo extends Phaser.Scene {
         this.load.tilemapTiledJSON("level-1", "map/mapa32.json");
         this.load.image('mask', 'img/mask1.png');
         this.load.image('ab', 'img/ab.png');
+        this.load.image("HUD", "img/inventario.png");
 
     }
 
@@ -48,6 +49,7 @@ class Jogo extends Phaser.Scene {
         this.floorLayer = this.map.createStaticLayer("chao", [tileset1,tileset2,tileset3]);
         this.wallsLayer = this.map.createStaticLayer("grama", [tileset1,tileset2,tileset3]);
         this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
+        this.colisao = this.map.createStaticLayer("colisao", [tileset1,tileset2,tileset3]);
         
         
         
@@ -71,7 +73,7 @@ class Jogo extends Phaser.Scene {
 
         // Collisions based on layer.
         //this.aboveLayer.setCollisionByProperty({collides: true});
-        this.aboveLayer.setCollisionBetween(0, 700); 
+        this.colisao.setCollisionBetween(0, 700); 
 
         // Set the above player layer higher than everything else.
         //this.aboveLayer.setDepth(10);
@@ -118,7 +120,7 @@ class Jogo extends Phaser.Scene {
         }, this);
 
         // Add collisions.
-        this.physics.add.collider(this.player,  this.aboveLayer);
+        this.physics.add.collider(this.player,  this.colisao);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
         this.physics.add.overlap(this.player,   this.poit,     function() {
             this.player.onPoit = true;
@@ -167,7 +169,15 @@ class Jogo extends Phaser.Scene {
             this.scene.pause();
         },this);
         this.events.on('resume', function () {
-        },this)
+        },this);
+        
+        let image = this.make.sprite({
+        x: 300,
+        y: 190,
+        scale: .4,
+        key: 'HUD'}).setScrollFactor(0);
+        image.setAlpha(.3);
+        //let image= this.add.image(300, 250, 'HUD').setScrollFactor(0);
     }
 
     /** Update called every tick. */
@@ -206,12 +216,8 @@ class Jogo extends Phaser.Scene {
             }, this);
         }
         this.gotoXY(this.player.x+this.player.body.width /
-        2 + this.player.body.offset.x - 32, this.player.y+this.player.body.height /
-        2 + this.player.body.offset.y + 16, this.navMesh);
-       /* if(this.ado.P.isDown){
-            this.scene.launch('pause');
-            this.scene.pause();
-        }*/
+        2 + this.player.body.offset.x, this.player.y+this.player.body.height /
+        2 + this.player.body.offset.y, this.navMesh);
     }
 
     roomStart(roomNumber) {
@@ -285,7 +291,7 @@ class Jogo extends Phaser.Scene {
                 console.error('Invalid direction');
                 return;
         }
-        //this.animations.play('walk_' + dir, animSpeed, true);
+        this.inimigo.anims.play('walk-' + dir, true);
         //this.adjustHitbox('walk');
 }
 }
