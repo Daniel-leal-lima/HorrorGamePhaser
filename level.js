@@ -90,6 +90,11 @@ class Jogo extends Phaser.Scene {
             if (object.type === 'Room') {
                 this.rooms.push(object);
             }
+            
+            //items
+            if (object.type === 'item') {
+            this.item = new Item(this, object.x, object.y);
+            }
 
             // stairs
             //if (object.name === 'Stairs') {
@@ -163,6 +168,29 @@ class Jogo extends Phaser.Scene {
         
         //this.ado = this.input.keyboard.addKeys('P,I');
         this.pausado = false;
+        this.keyObj1 = this.input.keyboard.addKey('x');
+        
+        
+        this.keyObj1.on('down', function(event){//Comando para teste
+             //console.log(this.map.getTileAt(26, 45, false, this.colisao));
+            //this.player.setPosition( [x] [, y] [, z] [, w])
+             this.player.x= 512;
+             this.player.y= 1152;
+            
+            this.tileColor = null;
+            this.colldingTileColor = new Phaser.Display.Color(243, 134, 48, 200);
+            this.faceColor = null;
+            this.debugGraphics = this.add.graphics();
+            //this.debugGraphics.setScale(2);
+            this.map.renderDebug(this.debugGraphics, {
+        tileColor: this.tileColor,                   // Non-colliding tiles
+        collidingTileColor: this.colldingTileColor,  // Colliding tiles
+        faceColor: this.faceColor                   // Interesting faces, i.e. colliding edges
+    });
+        },this);
+        
+        
+        
         this.keyObj = this.input.keyboard.addKey('P');
         this.keyObj.on('down', function(event){
              this.scene.launch('pause');
