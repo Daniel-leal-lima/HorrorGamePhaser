@@ -43,6 +43,10 @@ class Player extends Phaser.GameObjects.Sprite {
         this.vel = 100;
         this.onStairs = false;
         this.onPoit = false;
+        this.tilecamada;
+        this.tilebloco;
+        this.mapa;
+        this.LeftPorta = false;
         this.direction = 'down';
 
         config = {
@@ -99,7 +103,14 @@ class Player extends Phaser.GameObjects.Sprite {
         
         scene.events.on('resume', function () {
             this.reseta_Pause();
-        },this)
+        },this);
+        
+        this.aperta=false;
+        this.keyObj0 = scene.input.keyboard.addKey('E');
+        this.keyObj0.on('down', function(event){
+             this.aperta=true;
+        },this);
+        
     }
 
     /**
@@ -170,6 +181,11 @@ class Player extends Phaser.GameObjects.Sprite {
         if (this.onPoit) {
             this.sprite1.setVisible(true);
             this.onPoit = false;
+            if((this.LeftPorta)&&(this.aperta)){
+                this.aperta=false;
+                this.mapa.putTileAt(1, 27, 35,false ,this.tilecamada);
+               console.log('Interação Funcionando');
+               }
         } else {
             //sumir com o sprite
            this.sprite1.setVisible(false);

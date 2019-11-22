@@ -36,7 +36,7 @@ class Jogo extends Phaser.Scene {
 
     /** Setup level. */
     create() {
-
+       
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
@@ -49,7 +49,7 @@ class Jogo extends Phaser.Scene {
         this.floorLayer = this.map.createStaticLayer("chao", [tileset1,tileset2,tileset3]);
         this.wallsLayer = this.map.createStaticLayer("grama", [tileset1,tileset2,tileset3]);
         this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
-        this.colisao = this.map.createStaticLayer("colisao", [tileset1,tileset2,tileset3]);
+        this.colisao = this.map.createDynamicLayer("colisao", [tileset1,tileset2,tileset3]);
         
         
         
@@ -82,7 +82,7 @@ class Jogo extends Phaser.Scene {
         this.rooms = [];
         this.stairs = this.physics.add.group();
         this.poit = this.physics.add.group();//ponto de interesse.
-
+         this.testePorta = false;
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
 
@@ -104,8 +104,11 @@ class Jogo extends Phaser.Scene {
             
             
             //poit
-            if (object.name === 'poit') {
+            if (object.type === 'poit') {
                 this.poit.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                if(object.name === 'doo'){
+                    this.testePorta = true;
+                }
             }
             
             
@@ -127,9 +130,17 @@ class Jogo extends Phaser.Scene {
         // Add collisions.
         this.physics.add.collider(this.player,  this.colisao);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
-        this.physics.add.overlap(this.player,   this.poit,     function() {
+        this.physics.add.overlap(this.player,   this.poit, function(){
             this.player.onPoit = true;
-        }, null, this);
+            if(this.testePorta==true){
+                this.player.LeftPorta=true;
+                this.player.tilecamada = this.colisao;
+                this.player.mapa = this.map;
+                this.player.tilebloco = this.map.getTileAt(27, 35, false, this.colisao);
+            }
+        
+    
+        } , null, this);
 
         // start camera
         this.cameras.main.setZoom(2);
@@ -206,11 +217,11 @@ class Jogo extends Phaser.Scene {
         key: 'HUD'}).setScrollFactor(0);
         image.setAlpha(.3);
         //let image= this.add.image(300, 250, 'HUD').setScrollFactor(0);
+        
     }
 
     /** Update called every tick. */
     update(time, delta) {
-
         /* Potential Phaser 3 bug: fade effects seem to be limited by the camera width and height
         (I'm gussing that is what _ch and _cw variabels are), these look like they are set by the
         game config width and height instead of the camera boundaries. I'm setting them to match the
