@@ -82,7 +82,10 @@ class Jogo extends Phaser.Scene {
         this.rooms = [];
         this.stairs = this.physics.add.group();
         this.poit = this.physics.add.group();//ponto de interesse.
-         this.testePorta = false;
+        this.warp = this.physics.add.group({
+                width:400
+        });
+        this.testePorta = false;
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
 
@@ -111,6 +114,16 @@ class Jogo extends Phaser.Scene {
                 }
             }
             
+            if (object.type === 'collision') {
+                this.warp.add(this.plop= new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                //Forma de arrumar a colisão do item
+                this.plop.body.immovable = true;   
+                this.plop.setOrigin(0);
+                this.plop.body.height = object.height;
+                this.plop.body.width = object.width;
+                console.log(this.plop);
+                
+            }
             
             
             // spawn points
@@ -130,6 +143,9 @@ class Jogo extends Phaser.Scene {
         // Add collisions.
         this.physics.add.collider(this.player,  this.colisao);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
+        
+        this.physics.add.collider(this.player,  this.plop);
+        
         this.physics.add.overlap(this.player,   this.poit, function(){
             this.player.onPoit = true;
             if(this.testePorta==true){
@@ -192,7 +208,6 @@ class Jogo extends Phaser.Scene {
             this.colldingTileColor = new Phaser.Display.Color(243, 134, 48, 200);
             this.faceColor = null;
             this.debugGraphics = this.add.graphics();
-            //this.debugGraphics.setScale(2);
             this.map.renderDebug(this.debugGraphics, {
         tileColor: this.tileColor,                   // Non-colliding tiles
         collidingTileColor: this.colldingTileColor,  // Colliding tiles
@@ -216,7 +231,6 @@ class Jogo extends Phaser.Scene {
         scale: .4,
         key: 'HUD'}).setScrollFactor(0);
         image.setAlpha(.3);
-        //let image= this.add.image(300, 250, 'HUD').setScrollFactor(0);
         
     }
 
