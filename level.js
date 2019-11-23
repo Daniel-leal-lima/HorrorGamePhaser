@@ -144,7 +144,7 @@ class Jogo extends Phaser.Scene {
         this.physics.add.collider(this.player,  this.colisao);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
         
-        this.physics.add.collider(this.player,  this.plop);
+        this.physics.add.collider(this.player,  this.warp);
         
         this.physics.add.overlap(this.player,   this.poit, function(){
             this.player.onPoit = true;
