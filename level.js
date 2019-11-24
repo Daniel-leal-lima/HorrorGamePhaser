@@ -23,6 +23,16 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
+        this.load.spritesheet({
+            key: 'chave1',
+            url: "img/New Piskel-1.png.png",
+            frameConfig: {frameWidth: 32,  //The width of the frame in pixels.
+                          frameHeight: 32, //The height of the frame in pixels. Uses the frameWidth value if not provided.
+                          startFrame: 0,   //The first frame to start parsing from.
+                          endFrame: 0,    //The frame to stop parsing at. If not provided it will calculate the value based on the image and frame dimensions.
+                          margin: 0,       //The margin in the image. This is the space around the edge of the frames.
+                          spacing: 0}      //The spacing between each frame in the image.
+        });
         // Level tiles and data.
         this.load.image("tile1", "map/Tile1.png");
         this.load.image("tile2", "map/floor.png");
@@ -95,8 +105,10 @@ class Jogo extends Phaser.Scene {
             }
             
             //items
-            if (object.type === 'item') {
-            this.item = new Item(this, object.x, object.y);
+            if (object.type === 'item') 
+            {
+            this.item = new Item(this, object.x, object.y,object.name);
+                console.log(this.item);
             }
 
             // stairs
@@ -121,7 +133,6 @@ class Jogo extends Phaser.Scene {
                 this.plop.setOrigin(0);
                 this.plop.body.height = object.height;
                 this.plop.body.width = object.width;
-                console.log(this.plop);
                 
             }
             
@@ -141,7 +152,7 @@ class Jogo extends Phaser.Scene {
         }, this);
 
         // Add collisions.
-        this.physics.add.collider(this.player,  this.colisao);
+        //this.physics.add.collider(this.player,  this.colisao);
         this.physics.add.collider(this.player, this.objLayer);//desnecessário???
         
         this.physics.add.collider(this.player,  this.warp);

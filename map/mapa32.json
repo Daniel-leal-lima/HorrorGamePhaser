@@ -1,4 +1,12 @@
 { "backgroundcolor":"#0a140a",
+ "compressionlevel":0,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":64,
  "infinite":false,
  "layers":[
@@ -192,18 +200,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":15,
-                 "name":"Player",
-                 "point":true,
-                 "rotation":0,
-                 "type":"Spawn",
-                 "visible":false,
-                 "width":0,
-                 "x":951.666666666666,
-                 "y":1145.83333333334
-                }, 
-                {
-                 "height":0,
                  "id":18,
                  "name":"Enemy",
                  "point":true,
@@ -229,7 +225,7 @@
                 {
                  "height":0,
                  "id":40,
-                 "name":"",
+                 "name":"Nota",
                  "rotation":0,
                  "type":"item",
                  "visible":false,
@@ -240,7 +236,7 @@
                 {
                  "height":0,
                  "id":41,
-                 "name":"",
+                 "name":"Livro",
                  "rotation":0,
                  "type":"item",
                  "visible":false,
@@ -251,7 +247,7 @@
                 {
                  "height":0,
                  "id":42,
-                 "name":"",
+                 "name":"Chave1",
                  "rotation":0,
                  "type":"item",
                  "visible":false,
@@ -270,6 +266,18 @@
                  "width":0,
                  "x":908.5,
                  "y":1139
+                }, 
+                {
+                 "height":0,
+                 "id":15,
+                 "name":"Player",
+                 "point":true,
+                 "rotation":0,
+                 "type":"Spawn",
+                 "visible":false,
+                 "width":0,
+                 "x":951.666666666666,
+                 "y":1145.83333333334
                 }, 
                 {
                  "height":32,
@@ -1436,7 +1444,7 @@
  "nextobjectid":187,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.5",
+ "tiledversion":"1.3.0",
  "tileheight":32,
  "tilesets":[
         {
