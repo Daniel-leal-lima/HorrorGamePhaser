@@ -24,8 +24,8 @@ class Jogo extends Phaser.Scene {
                           spacing: 0}      //The spacing between each frame in the image.
         });
         this.load.spritesheet({
-            key: 'chave1',
-            url: "img/New Piskel-1.png.png",
+            key: 'nota',
+            url: "img/New Piskel-3.png.png",
             frameConfig: {frameWidth: 32,  //The width of the frame in pixels.
                           frameHeight: 32, //The height of the frame in pixels. Uses the frameWidth value if not provided.
                           startFrame: 0,   //The first frame to start parsing from.
@@ -33,6 +33,39 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
+
+        this.load.spritesheet({
+            key: 'chave1',
+            url: "img/New Piskel-1.png.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32,
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}      
+        });
+
+        this.load.spritesheet({
+            key: 'chave',
+            url: "img/New Piskel.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32,
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}      
+        });
+
+       /* this.load.spritesheet({
+            key: 'chave2',
+            url: "img/New Piskel-2.png.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32, 
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}*/   
+
         // Level tiles and data.
         this.load.image("tile1", "map/Tile1.png");
         this.load.image("tile2", "map/floor.png");
@@ -42,6 +75,8 @@ class Jogo extends Phaser.Scene {
         this.load.image('ab', 'img/ab.png');
         this.load.image("HUD", "img/inventario.png");
 
+        //var item;
+
     }
 
     /** Setup level. */
@@ -49,6 +84,7 @@ class Jogo extends Phaser.Scene {
        
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
+
 
         // Define tiles used in map.
         const tileset1 = this.map.addTilesetImage("Tile1", "tile1"); 
@@ -62,7 +98,7 @@ class Jogo extends Phaser.Scene {
         this.colisao = this.map.createDynamicLayer("colisao", [tileset1,tileset2,tileset3]);
         
         
-        
+       // this.item.collide = true;
         
         
          const objectLayer = this.map.getObjectLayer("navmesh");
@@ -92,9 +128,8 @@ class Jogo extends Phaser.Scene {
         this.rooms = [];
         this.stairs = this.physics.add.group();
         this.poit = this.physics.add.group();//ponto de interesse.
-        this.warp = this.physics.add.group({
-                width:400
-        });
+        this.warp = this.physics.add.group();
+        this.item = this.physics.add.group();
         this.testePorta = false;
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
@@ -107,8 +142,9 @@ class Jogo extends Phaser.Scene {
             //items
             if (object.type === 'item') 
             {
-            this.item = new Item(this, object.x, object.y,object.name);
-                console.log(this.item);
+            this.item.add(this.Item_Var = new Item(this, object.x, object.y,object.name));
+                this.Item_Var.body.immovable = true;
+                console.log(this.item.body);
             }
 
             // stairs
@@ -153,8 +189,10 @@ class Jogo extends Phaser.Scene {
 
         // Add collisions.
         //this.physics.add.collider(this.player,  this.colisao);
-        this.physics.add.collider(this.player, this.objLayer);//desnecessário???
+       
         
+        //this.physics.add.collider(this.player, this.item);
+        this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.warp);
         
         this.physics.add.overlap(this.player,   this.poit, function(){
@@ -166,6 +204,9 @@ class Jogo extends Phaser.Scene {
                 this.player.tilebloco = this.map.getTileAt(27, 35, false, this.colisao);
             }
         
+        
+        
+      
     
         } , null, this);
 
@@ -282,6 +323,38 @@ class Jogo extends Phaser.Scene {
         this.gotoXY(this.player.x+this.player.body.width /
         2 + this.player.body.offset.x, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y, this.navMesh);
+
+       // game.physics.arcade.collide(item, player);
+    }
+    
+    coleta(joogadir,item){
+        item.destroy();
+        console.log(item.texture.key);
+        if(item.texture.key=='chave'){
+            this.Hud_1= this.make.sprite({
+            x: 220,
+            y: 105,
+            scale: .4,
+            key: 'chave'}).setScrollFactor(0);
+        //image.setAlpha(.3);
+        }
+        else if(item.texture.key=='chave1'){
+            this.Hud_2= this.make.sprite({
+            x: 245,
+            y: 105,
+            scale: .4,
+            key: 'chave1'}).setScrollFactor(0);
+        //image.setAlpha(.3);
+        }
+        else if(item.texture.key=='nota'){
+            this.Hud_3= this.make.sprite({
+            x: 271,
+            y: 105,
+            scale: .4,
+            key: 'nota'}).setScrollFactor(0);
+            console.log(this.Hud_3);
+        //image.setAlpha(.3);
+        }
     }
 
     roomStart(roomNumber) {

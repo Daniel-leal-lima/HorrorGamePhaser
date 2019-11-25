@@ -10,14 +10,23 @@ class Item extends Phaser.GameObjects.Sprite {
         //this.body.setOffset(16, 31);
         //this.body.setCircle(4);
      console.log(nome);
-     if(nome == 'Livro'){
-         this.setTexture('player');
+     if(nome == 'Nota'){
+         this.setTexture('nota');
+         this.setScale(.4)
      }
         else if(nome=='Chave1'){
         this.setTexture('chave1');
             this.setScale(.4);
         }
-     
+     if(nome == 'Chave'){
+        this.setTexture('chave');
+        this.setScale(.4)
+     }
+
+      /* if(nome == 'Chave2'){
+        this.setTexture('chave2');
+        this.setScale(.4)
+     }*/
  }
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
