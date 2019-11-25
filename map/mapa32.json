@@ -957,7 +957,7 @@
                  "y":989
                 }, 
                 {
-                 "height":958,
+                 "height":991.333333333333,
                  "id":135,
                  "name":"",
                  "rotation":0,
@@ -965,7 +965,7 @@
                  "visible":true,
                  "width":36,
                  "x":1248,
-                 "y":1058
+                 "y":1024.66666666667
                 }, 
                 {
                  "height":28,
@@ -1293,8 +1293,8 @@
                  "rotation":0,
                  "type":"collisionDoor",
                  "visible":true,
-                 "width":6,
-                 "x":888,
+                 "width":4,
+                 "x":890,
                  "y":1119.33333333333
                 }, 
                 {
@@ -1318,7 +1318,7 @@
                  "visible":true,
                  "width":0,
                  "x":934.666666666667,
-                 "y":1226
+                 "y":1219.33333333333
                 }],
          "opacity":1,
          "type":"objectgroup",

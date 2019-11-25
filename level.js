@@ -82,6 +82,8 @@ class Jogo extends Phaser.Scene {
     /** Setup level. */
     create() {
        
+        this.contador=0; // Variavel contador para Itens
+        
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
@@ -219,6 +221,7 @@ class Jogo extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.warp);
         this.physics.add.collider(this.player,  this.doors);
+        this.physics.add.collider(this.player,  this.inimigo);
         
         this.physics.add.overlap(this.player,   this.poit, this.porta, null, this);
 
@@ -340,9 +343,22 @@ class Jogo extends Phaser.Scene {
     }
     
     coleta(jogador,item){
+        
         item.destroy();
         console.log(item.texture.key);
-        if(item.texture.key=='chave'){
+        
+        this.Array_Pos_HUD = [{id:1,x:220,y:105},{id:2,x:245,y:105},
+                              {id:3,x:271,y:105}]
+            
+            this.Hud_item = this.make.sprite({
+            x: this.Array_Pos_HUD[this.contador].x,
+            y: this.Array_Pos_HUD[this.contador].y,
+            scale: .4,
+            key: item.texture.key
+            }).setScrollFactor(0);
+         
+         this.contador++;
+        /*if(item.texture.key=='chave'){
             this.Hud_1= this.make.sprite({
             x: 220,
             y: 105,
@@ -364,30 +380,37 @@ class Jogo extends Phaser.Scene {
             y: 105,
             scale: .4,
             key: 'nota'}).setScrollFactor(0);
-            console.log(this.Hud_3);
+            //console.log(this.Hud_3);
         //image.setAlpha(.3);
-        }
+        }*/
     }
+
     porta(jogador, ponto){
          this.player.onPoit = true;
             //console.log(ponto.varial);
             if(this.testePorta==true){
                 this.player.LeftPorta=true;
+                this.teste;
                 this.player.tilecamada = this.colisao;
                 this.player.mapa = this.map;
                 switch(ponto.varial){
                     case 'Porta 1':
                         this.player.Localiza_porta=1;
+                        this.teste = this.doors.getChildren()[0];
                         break;
                     case 'Porta 2':
                         this.player.Localiza_porta=2;
+                        this.teste = this.doors.getChildren()[1]
                         break;
                 }
-                if(this.player.Porta_Aberta){                    
+                if(this.player.Porta_Aberta){
+                    this.player.Porta_Aberta = false;
+                    this.teste.body.x=865;
+
                     //console.log(this.doors.getChildren()[1].body); -->escolha da porta para  modificá-la a partir do index.
                     
-                   
                 }
+                
             }
         
         

@@ -195,7 +195,7 @@ class Player extends Phaser.GameObjects.Sprite {
                             break;
                     }
                 
-               
+               this.Porta_Aberta = true;
                 console.log(this.Localiza_porta);
                }
         } else {
