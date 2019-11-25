@@ -130,6 +130,7 @@ class Jogo extends Phaser.Scene {
         this.poit = this.physics.add.group();//ponto de interesse.
         this.warp = this.physics.add.group();
         this.item = this.physics.add.group();
+        this.doors = this.physics.add.group();
         this.testePorta = false;
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
@@ -154,11 +155,16 @@ class Jogo extends Phaser.Scene {
             
             
             
-            //poit
+            //poit - ponto de interesse do jogador
             if (object.type === 'poit') {
-                this.poit.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                this.testePorta = true;
                 if(object.name === 'doo'){
-                    this.testePorta = true;
+                    this.Prox_porta.varial = 'Porta 1';
+                    //this.poit.variavel = object.name;
+                }
+                else if(object.name === 'Chao'){
+                    this.Prox_porta.varial = 'Porta 2';
                 }
             }
             
@@ -171,6 +177,24 @@ class Jogo extends Phaser.Scene {
                 this.plop.body.width = object.width;
                 
             }
+            
+            
+            
+            
+            
+            if (object.type === 'collisionDoor') {
+                this.doors.add(this.doors1= new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                //Forma de arrumar a colisão do item
+                this.doors1.varial = object.name;
+                this.doors1.body.immovable = true;   
+                this.doors1.setOrigin(0);
+                this.doors1.body.height = object.height;
+                this.doors1.body.width = object.width;
+                
+            }
+            
+            
+            
             
             
             // spawn points
@@ -194,21 +218,9 @@ class Jogo extends Phaser.Scene {
         //this.physics.add.collider(this.player, this.item);
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.warp);
+        this.physics.add.collider(this.player,  this.doors);
         
-        this.physics.add.overlap(this.player,   this.poit, function(){
-            this.player.onPoit = true;
-            if(this.testePorta==true){
-                this.player.LeftPorta=true;
-                this.player.tilecamada = this.colisao;
-                this.player.mapa = this.map;
-                this.player.tilebloco = this.map.getTileAt(27, 35, false, this.colisao);
-            }
-        
-        
-        
-      
-    
-        } , null, this);
+        this.physics.add.overlap(this.player,   this.poit, this.porta, null, this);
 
         // start camera
         this.cameras.main.setZoom(2);
@@ -327,7 +339,7 @@ class Jogo extends Phaser.Scene {
        // game.physics.arcade.collide(item, player);
     }
     
-    coleta(joogadir,item){
+    coleta(jogador,item){
         item.destroy();
         console.log(item.texture.key);
         if(item.texture.key=='chave'){
@@ -356,7 +368,30 @@ class Jogo extends Phaser.Scene {
         //image.setAlpha(.3);
         }
     }
-
+    porta(jogador, ponto){
+         this.player.onPoit = true;
+            //console.log(ponto.varial);
+            if(this.testePorta==true){
+                this.player.LeftPorta=true;
+                this.player.tilecamada = this.colisao;
+                this.player.mapa = this.map;
+                switch(ponto.varial){
+                    case 'Porta 1':
+                        this.player.Localiza_porta=1;
+                        break;
+                    case 'Porta 2':
+                        this.player.Localiza_porta=2;
+                        break;
+                }
+                if(this.player.Porta_Aberta){                    
+                    //console.log(this.doors.getChildren()[1].body); -->escolha da porta para  modificá-la a partir do index.
+                    
+                   
+                }
+            }
+        
+        
+    }
     roomStart(roomNumber) {
         if (roomNumber == 4) {
             this.cameras.main.shake(2500, 0.001, true);

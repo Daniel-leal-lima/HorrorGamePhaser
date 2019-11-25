@@ -46,6 +46,8 @@ class Player extends Phaser.GameObjects.Sprite {
         this.tilecamada;
         this.tilebloco;
         this.mapa;
+        this.Localiza_porta=0;
+        this.Porta_Aberta=false;
         this.LeftPorta = false;
         this.direction = 'down';
 
@@ -180,11 +182,21 @@ class Player extends Phaser.GameObjects.Sprite {
         // Ponto de interesse
         if (this.onPoit) {
             this.sprite1.setVisible(true);
-            this.onPoit = false;
+            this.onPoit = false;            
             if((this.LeftPorta)&&(this.aperta)){
-                this.aperta=false;
-                this.mapa.putTileAt(1, 27, 35,false ,this.tilecamada);
-               console.log('Interação Funcionando');
+                this.aperta=false;              //verifica se o botão está pressionado 
+
+                    switch(this.Localiza_porta){
+                        case 1:
+                            this.mapa.putTileAt(1, 27, 35,false ,this.tilecamada);
+                            break;
+                        case 2:
+                            this.mapa.putTileAt(1, 30, 37,false ,this.tilecamada);
+                            break;
+                    }
+                
+               
+                console.log(this.Localiza_porta);
                }
         } else {
             //sumir com o sprite
