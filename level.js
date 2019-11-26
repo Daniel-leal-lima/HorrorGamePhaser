@@ -145,7 +145,8 @@ class Jogo extends Phaser.Scene {
         this.rooms = [];
         this.stairs = this.physics.add.group();
         this.poit = this.physics.add.group();//ponto de interesse.
-        this.warp = this.physics.add.group();
+        this.collides = this.physics.add.group();
+        this.warp = this.physics.add.group();//Warp nos cenários
         this.item = this.physics.add.group();
         this.doors = this.physics.add.group();
         this.testePorta = false;
@@ -171,8 +172,6 @@ class Jogo extends Phaser.Scene {
             //    this.stairs.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
             //}
             
-            
-            
             //poit - ponto de interesse do jogador
             if (object.type === 'poit') {
                 this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
@@ -186,20 +185,20 @@ class Jogo extends Phaser.Scene {
                 }
             }
             
+            
+            // Puxando as colisões desenhadas no tiled
             if (object.type === 'collision') {
-                this.warp.add(this.plop= new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                this.collides.add(this.plop= new Phaser.GameObjects.Sprite(this, object.x, object.y));
                 //Forma de arrumar a colisão do item
                 this.plop.body.immovable = true;   
                 this.plop.setOrigin(0);
                 this.plop.body.height = object.height;
-                this.plop.body.width = object.width;
+                 this.plop.body.width = object.width;
                 
             }
             
             
-            
-            
-            
+            // Puxando as colisões das portas desenhadas no tiled
             if (object.type === 'collisionDoor') {
                 this.doors.add(this.doors1= new Phaser.GameObjects.Sprite(this, object.x, object.y));
                 //Forma de arrumar a colisão do item
@@ -211,6 +210,15 @@ class Jogo extends Phaser.Scene {
                 
             }
             
+            if (object.type === 'warp') {
+                this.warp.add(this.Teleporta= new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                //Forma de arrumar a colisão do item
+                this.Teleporta.ID = object.name;
+                this.Teleporta.body.immovable = true;   
+                this.Teleporta.setOrigin(0);
+                this.Teleporta.body.height = object.height;
+                this.Teleporta.body.width = object.width;
+            }
             
             
             
@@ -226,18 +234,16 @@ class Jogo extends Phaser.Scene {
                     this.inimigo = new Enemy(this, object.x, object.y);
                 }
             }
-
         }, this);
 
         // Add collisions.
-        //this.physics.add.collider(this.player,  this.colisao);
-       
         
-        //this.physics.add.collider(this.player, this.item);
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
-        this.physics.add.collider(this.player,  this.warp);
-        this.physics.add.collider(this.player,  this.doors);
-        this.physics.add.collider(this.player,  this.inimigo, function(){
+        this.physics.add.collider(this.player,  this.collides); // colisões
+        this.physics.add.collider(this.player,  this.doors); // portas
+        this.physics.add.collider(this.player,  this.warp, this.Leva, null, this); // portas
+
+        this.physics.add.collider(this.player,  this.inimigo, function(){ //inimigo toca no personagem
             console.log('te peguei');
             this.scene.stop();
             this.scene.start('gameover'); 
@@ -410,7 +416,35 @@ class Jogo extends Phaser.Scene {
         }
         
     }
-
+    Leva(jogador,warp){
+        console.log(warp.ID);
+        switch(warp.ID){
+            case 'warp1':
+                this.player.x= 1041;
+                this.player.y= 920;
+                console.log('nice paw');
+                break;
+            case 'warp2':
+                this.player.x= 1041;
+                this.player.y= 1059;
+                break;
+            case 'warp3':
+                this.player.x= 1310;
+                this.player.y= 627;
+                break;
+            case 'warp4':
+                this.player.x= 1172;
+                this.player.y= 1065;
+                break;
+        }
+        //if(warp.ID == 'toxico'){
+          //  console.log('aaaaaaaaaaaaaaaaaaaa');
+            //this.player.x= 1041;
+        //this.player.y= 940;
+        //}
+        //this.player.x= 1041;
+        //this.player.y= 940;
+    }
     porta(jogador, ponto){
          this.player.onPoit = true;
             console.log(ponto.varial);
@@ -440,7 +474,6 @@ class Jogo extends Phaser.Scene {
                 }
                 
             }
-        
     }
     roomStart(roomNumber) {
         if (roomNumber == 4) {

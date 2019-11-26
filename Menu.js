@@ -13,8 +13,8 @@ class  Menu extends Phaser.Scene{
     }
     create(){
         this.markers = [
-    { name: 'alien death', start: 1.2, duration: 8.6, config:{volume: 5,loop:true,delay: 1},},
-    { name: 'boss hit', start: 3, duration: 0.5, config: {} },
+    { name: 'alien death', start: 1, duration: 30, config:{volume: 5,loop:true},},
+    { name: 'boss hit', start: 9, duration: 29, config: {volume: 5,loop:true,delay:1} },
     { name: 'escape', start: 4, duration: 3.2, config: {} },
     { name: 'meow', start: 8, duration: 0.5, config: {} },
     { name: 'numkey', start: 9, duration: 0.1, config: {} },
@@ -25,7 +25,7 @@ class  Menu extends Phaser.Scene{
 ];
             console.log('menu iniciado');
            
-        this.sound.play('Tema', this.markers[0]);
+        this.sound.play('Tema', this.markers[1]);
     let menuimage = this.make.sprite({
         x:240,
         y:150,
