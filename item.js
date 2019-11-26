@@ -9,29 +9,31 @@ class Item extends Phaser.GameObjects.Sprite {
         this.body.setCollideWorldBounds(true);
         //this.body.setOffset(16, 31);
         //this.body.setCircle(4);
-     console.log(nome);
-     if(nome == 'Nota'){
-         this.setTexture('nota');
-         this.setScale(.4)
+        console.log(nome);
+     if(nome == 'Lanterna'){
+         this.alpha =.5;
+         this.setTexture('lanterna');
+         this.setScale(.5)
+         
      }
         else if(nome=='Chave1'){
         this.setTexture('chave1');
-        this.setScale(.4);
+            this.setScale(.4);
         }
-     if(nome == 'Chave'){
+     else if(nome == 'Chave'){
         this.setTexture('chave');
         this.setScale(.4)
      }
+     else if(nome == 'Nota'){
+        this.setTexture('nota');
+        this.setScale(.4)
+     }
+     
 
-       if(nome == 'Chave2'){
+      /* if(nome == 'Chave2'){
         this.setTexture('chave2');
         this.setScale(.4)
-     }
-
-     if(nome == 'Nota2'){
-        this.setTexture('nota2');
-        this.setScale(.4)
-     }
+     }*/
  }
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
