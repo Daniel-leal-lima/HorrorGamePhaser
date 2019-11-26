@@ -6,10 +6,26 @@ class  Menu extends Phaser.Scene{
     preload(){
         this.load.image("menu","img/provisorio.jpg");
 		this.load.image("botao","img/play.png")
+          this.load.audio('Tema', [
+        'audio/Menu.ogg',
+        'audio/Menu.mp3']
+    );
     }
     create(){
-
-
+        this.markers = [
+    { name: 'alien death', start: 1.2, duration: 8.6, config:{volume: 5,loop:true,delay: 1},},
+    { name: 'boss hit', start: 3, duration: 0.5, config: {} },
+    { name: 'escape', start: 4, duration: 3.2, config: {} },
+    { name: 'meow', start: 8, duration: 0.5, config: {} },
+    { name: 'numkey', start: 9, duration: 0.1, config: {} },
+    { name: 'ping', start: 10, duration: 1.0, config: {} },
+    { name: 'death', start: 12, duration: 4.2, config: {} },
+    { name: 'shot', start: 17, duration: 1.0, config: {} },
+    { name: 'squit', start: 19, duration: 0.3, config: {} }
+];
+            console.log('menu iniciado');
+           
+        this.sound.play('Tema', this.markers[0]);
     let menuimage = this.make.sprite({
         x:240,
         y:150,
