@@ -22,9 +22,9 @@
     <script src="level.js"></script>
     <script src="Player.js"></script>
     <script src="Enemy.js"></script>
-    <script src="Menu.js"></script>
     <script src="Pause.js"></script>
     <script src="item.js"></script>
+    <script src="Menu.js"></script>
 <script>
 
         /**
@@ -38,9 +38,8 @@
              */
             constructor(config) {
                 super(config);
-                
-                this.scene.add('jogo', Jogo, true);
-                this.scene.add('menu', Menu, false);
+                this.scene.add('menu', Menu, true);
+                this.scene.add('jogo', Jogo, false);
                 this.scene.add('pause', Pause, false);//adiciona cena
             }
         }
