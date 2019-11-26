@@ -2,6 +2,7 @@
  * Class representing a level (https://photonstorm.github.io/phaser3-docs/Phaser.Scene.html)
  * @extends Phaser.Scene
  */
+
 class Jogo extends Phaser.Scene {
 
     /** Create the level. */
@@ -56,15 +57,28 @@ class Jogo extends Phaser.Scene {
                           spacing: 0}      
         });
 
-       /* this.load.spritesheet({
+         this.load.spritesheet({
             key: 'chave2',
             url: "img/New Piskel-2.png.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32,
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}      
+        });
+        
+
+        this.load.spritesheet({
+            key: 'nota2',
+            url: "img/New Piskel-4.png.png",
             frameConfig: {frameWidth: 32,  
                           frameHeight: 32, 
                           startFrame: 0,   
                           endFrame: 0,    
                           margin: 0,       
-                          spacing: 0}*/   
+                          spacing: 0}
+        });
 
         // Level tiles and data.
         this.load.image("tile1", "map/Tile1.png");
@@ -82,8 +96,6 @@ class Jogo extends Phaser.Scene {
     /** Setup level. */
     create() {
        
-        this.contador=0; // Variavel contador para Itens
-        
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
@@ -132,7 +144,6 @@ class Jogo extends Phaser.Scene {
         this.poit = this.physics.add.group();//ponto de interesse.
         this.warp = this.physics.add.group();
         this.item = this.physics.add.group();
-        this.doors = this.physics.add.group();
         this.testePorta = false;
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
@@ -157,16 +168,11 @@ class Jogo extends Phaser.Scene {
             
             
             
-            //poit - ponto de interesse do jogador
+            //poit
             if (object.type === 'poit') {
-                this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
-                this.testePorta = true;
+                this.poit.add(new Phaser.GameObjects.Sprite(this, object.x, object.y));
                 if(object.name === 'doo'){
-                    this.Prox_porta.varial = 'Porta 1';
-                    //this.poit.variavel = object.name;
-                }
-                else if(object.name === 'Chao'){
-                    this.Prox_porta.varial = 'Porta 2';
+                    this.testePorta = true;
                 }
             }
             
@@ -179,24 +185,6 @@ class Jogo extends Phaser.Scene {
                 this.plop.body.width = object.width;
                 
             }
-            
-            
-            
-            
-            
-            if (object.type === 'collisionDoor') {
-                this.doors.add(this.doors1= new Phaser.GameObjects.Sprite(this, object.x, object.y));
-                //Forma de arrumar a colisão do item
-                this.doors1.varial = object.name;
-                this.doors1.body.immovable = true;   
-                this.doors1.setOrigin(0);
-                this.doors1.body.height = object.height;
-                this.doors1.body.width = object.width;
-                
-            }
-            
-            
-            
             
             
             // spawn points
@@ -220,10 +208,21 @@ class Jogo extends Phaser.Scene {
         //this.physics.add.collider(this.player, this.item);
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.warp);
-        this.physics.add.collider(this.player,  this.doors);
-        this.physics.add.collider(this.player,  this.inimigo);
         
-        this.physics.add.overlap(this.player,   this.poit, this.porta, null, this);
+        this.physics.add.overlap(this.player,   this.poit, function(){
+            this.player.onPoit = true;
+            if(this.testePorta==true){
+                this.player.LeftPorta=true;
+                this.player.tilecamada = this.colisao;
+                this.player.mapa = this.map;
+                this.player.tilebloco = this.map.getTileAt(27, 35, false, this.colisao);
+            }
+        
+        
+        
+      
+    
+        } , null, this);
 
         // start camera
         this.cameras.main.setZoom(2);
@@ -298,7 +297,10 @@ class Jogo extends Phaser.Scene {
         scale: .4,
         key: 'HUD'}).setScrollFactor(0);
         image.setAlpha(.3);
+
         
+       
+
     }
 
     /** Update called every tick. */
@@ -342,23 +344,10 @@ class Jogo extends Phaser.Scene {
        // game.physics.arcade.collide(item, player);
     }
     
-    coleta(jogador,item){
-        
+    coleta(joogadir,item){
         item.destroy();
         console.log(item.texture.key);
-        
-        this.Array_Pos_HUD = [{id:1,x:220,y:105},{id:2,x:245,y:105},
-                              {id:3,x:271,y:105}]
-            
-            this.Hud_item = this.make.sprite({
-            x: this.Array_Pos_HUD[this.contador].x,
-            y: this.Array_Pos_HUD[this.contador].y,
-            scale: .4,
-            key: item.texture.key
-            }).setScrollFactor(0);
-         
-         this.contador++;
-        /*if(item.texture.key=='chave'){
+        if(item.texture.key=='chave'){
             this.Hud_1= this.make.sprite({
             x: 220,
             y: 105,
@@ -380,41 +369,29 @@ class Jogo extends Phaser.Scene {
             y: 105,
             scale: .4,
             key: 'nota'}).setScrollFactor(0);
-            //console.log(this.Hud_3);
+            console.log(this.Hud_3);
         //image.setAlpha(.3);
-        }*/
+        }
+        else if(item.texture.key=='chave2'){
+            this.Hud_4= this.make.sprite({
+            x: 295,
+            y: 105,
+            scale: .4,
+            key: 'chave2'}).setScrollFactor(0);
+            console.log(this.Hud_4);
+        //image.setAlpha(.3);
+        }
+        else if(item.texture.key=='nota2'){
+            this.Hud_4= this.make.sprite({
+            x: 322,
+            y: 105,
+            scale: .4,
+            key: 'nota2'}).setScrollFactor(0);
+            console.log(this.Hud_4);
+        //image.setAlpha(.3);
+        }
     }
 
-    porta(jogador, ponto){
-         this.player.onPoit = true;
-            //console.log(ponto.varial);
-            if(this.testePorta==true){
-                this.player.LeftPorta=true;
-                this.teste;
-                this.player.tilecamada = this.colisao;
-                this.player.mapa = this.map;
-                switch(ponto.varial){
-                    case 'Porta 1':
-                        this.player.Localiza_porta=1;
-                        this.teste = this.doors.getChildren()[0];
-                        break;
-                    case 'Porta 2':
-                        this.player.Localiza_porta=2;
-                        this.teste = this.doors.getChildren()[1]
-                        break;
-                }
-                if(this.player.Porta_Aberta){
-                    this.player.Porta_Aberta = false;
-                    this.teste.body.x=865;
-
-                    //console.log(this.doors.getChildren()[1].body); -->escolha da porta para  modificá-la a partir do index.
-                    
-                }
-                
-            }
-        
-        
-    }
     roomStart(roomNumber) {
         if (roomNumber == 4) {
             this.cameras.main.shake(2500, 0.001, true);
