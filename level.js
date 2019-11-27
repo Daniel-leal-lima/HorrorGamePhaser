@@ -16,10 +16,10 @@ class Jogo extends Phaser.Scene {
         this.load.spritesheet({
             key: 'player',
             url: "img/Player.png",
-            frameConfig: {frameWidth: 40,  //The width of the frame in pixels.
-                          frameHeight: 40, //The height of the frame in pixels. Uses the frameWidth value if not provided.
+            frameConfig: {frameWidth: 32,  //The width of the frame in pixels.
+                          frameHeight: 32, //The height of the frame in pixels. Uses the frameWidth value if not provided.
                           startFrame: 0,   //The first frame to start parsing from.
-                          endFrame: 40,    //The frame to stop parsing at. If not provided it will calculate the value based on the image and frame dimensions.
+                          endFrame: 24,    //The frame to stop parsing at. If not provided it will calculate the value based on the image and frame dimensions.
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
@@ -176,13 +176,12 @@ class Jogo extends Phaser.Scene {
             if (object.type === 'poit') {
                 this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
                 this.testePorta = true;
-                if(object.name === 'doo'){
-                    this.Prox_porta.varial = 'Porta 1';
-                    //this.poit.variavel = object.name;
-                }
-                else if(object.name === 'Chao'){
-                    this.Prox_porta.varial = 'Porta 2';
-                }
+                this.Prox_porta.body.immovable = true;   
+                this.Prox_porta.setOrigin(0);
+                this.Prox_porta.body.height = object.height;
+                 this.Prox_porta.body.width = object.width;
+                 this.Prox_porta.varial = object.name;
+                 this.Prox_porta.ativo = false;
             }
             
             
@@ -329,7 +328,7 @@ class Jogo extends Phaser.Scene {
         x: 300,
         y: 190,
         key: 'CAM'}).setScrollFactor(0);
-        this.Over_cam.setAlpha(.9);
+        this.Over_cam.setAlpha(.911);
         this.Aleatorio=0;
         this.map.findObject('Objects', function(object) {
             //items
@@ -361,6 +360,7 @@ class Jogo extends Phaser.Scene {
 
             this.cameras.main.fadeOut(250, 0, 0, 0, function(camera, progress) {
                 this.player.canMove = false;
+                //this.player;
                 if (progress === 1) {
                     // Change camera boundaries when fade out complete.
                     this.cameras.main.setBounds(this.rooms[this.player.currentRoom].x,
@@ -422,7 +422,6 @@ class Jogo extends Phaser.Scene {
             case 'warp1':
                 this.player.x= 1041;
                 this.player.y= 920;
-                console.log('nice paw');
                 break;
             case 'warp2':
                 this.player.x= 1041;
@@ -437,23 +436,19 @@ class Jogo extends Phaser.Scene {
                 this.player.y= 1065;
                 break;
         }
-        //if(warp.ID == 'toxico'){
-          //  console.log('aaaaaaaaaaaaaaaaaaaa');
-            //this.player.x= 1041;
-        //this.player.y= 940;
-        //}
-        //this.player.x= 1041;
-        //this.player.y= 940;
     }
     porta(jogador, ponto){
-         this.player.onPoit = true;
             console.log(ponto.varial);
-            if(this.testePorta==true){
+            console.log(ponto.ativo);
+            console.log(ponto);
+            
+            if((this.testePorta)&&(!ponto.ativo)){
+                this.player.onPoit = true;
                 this.player.LeftPorta=true;
                 this.teste;
                 this.player.tilecamada = this.colisao;
                 this.player.mapa = this.map;
-                console.log(this.player.Porta_aberta);
+                //console.log(this.doors);
                 switch(ponto.varial){
                     case 'Porta 1':
                         this.player.Localiza_porta=1;
@@ -466,9 +461,13 @@ class Jogo extends Phaser.Scene {
                 }
                 if(this.player.Porta_aberta){
                     //this.player.Porta_Aberta = false;
+                    this.player.Porta_aberta = false;
                     this.teste.body.x=865;
+                    this.player.onPoit = false;
+                    ponto.ativo = true;
                     console.log(this.teste);
-
+                    this.player.LeftPorta=false;
+                    
                     //console.log(this.doors.getChildren()[1].body); -->escolha da porta para  modificá-la a partir do index.
                     
                 }

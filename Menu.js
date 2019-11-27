@@ -25,7 +25,7 @@ class  Menu extends Phaser.Scene{
 ];
             console.log('menu iniciado');
            
-        this.sound.play('Tema', this.markers[1]);
+        this.music = this.sound.play('Tema', this.markers[1]);
     let menuimage = this.make.sprite({
         x:240,
         y:150,
@@ -39,9 +39,8 @@ class  Menu extends Phaser.Scene{
     sprite.on('pointerdown', function (pointer) {
 
         //this.setTint(0xff0000);
-        this.scene.pause();
+        this.scene.stop();
         this.scene.start('jogo');
-
 
     },this);
 

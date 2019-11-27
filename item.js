@@ -11,7 +11,7 @@ class Item extends Phaser.GameObjects.Sprite {
         //this.body.setCircle(4);
         console.log(nome);
      if(nome == 'Lanterna'){
-         this.alpha =.5;
+         this.alpha =.8;
          this.setTexture('lanterna');
          this.setScale(.5)
          
@@ -28,19 +28,9 @@ class Item extends Phaser.GameObjects.Sprite {
         this.setTexture('nota');
         this.setScale(.4)
      }
-     
-
-      /* if(nome == 'Chave2'){
-        this.setTexture('chave2');
-        this.setScale(.4)
-     }*/
  }
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        
-        
-        
-        
     }
 
 }

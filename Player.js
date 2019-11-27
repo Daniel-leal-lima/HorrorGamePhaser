@@ -27,8 +27,10 @@ class Player extends Phaser.GameObjects.Sprite {
         this.setPosition(x, y);
 
         this.body.setCollideWorldBounds(true);
-        this.body.setOffset(16, 31);
-        this.body.setCircle(4);
+        this.body.setOffset(11.5, 23);
+        this.body.width=8;
+        this.body.height=8;
+        console.log(this.body);
         //this.keys = scene.input.keyboard.addKeys('W,S,A,D,UP,LEFT,RIGHT,DOWN,SPACE');
         this.Key_W = scene.input.keyboard.addKey('W');
         this.Key_S = scene.input.keyboard.addKey('S');
@@ -53,7 +55,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [3,11,19]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [6,7,8]}),
             frameRate: 3,
             repeat: -1
         };
@@ -61,7 +63,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [0,8]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [0,1]}),
             frameRate: 3,
             repeat: -1
         };
@@ -69,16 +71,23 @@ class Player extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [6,14]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [13,14]}),
             frameRate: 3,
             repeat: -1
         };
         scene.anims.create(config);
 
-
+        config = {
+            key: 'stand-left',
+            frames: scene.anims.generateFrameNumbers('player', { frames: [23,24]}),
+            frameRate: 3,
+            repeat: -1
+        };
+        scene.anims.create(config);
+        
         var config = {
             key: 'walk-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [4,12,20,28]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [9,10,11,12]}),
             frameRate: 15,
             repeat: -1
         };
@@ -86,7 +95,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         var config = {
             key: 'walk-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [1,9,17,25] }),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [2,3,4,5] }),
             frameRate: 15,
             repeat: -1
         };
@@ -94,7 +103,15 @@ class Player extends Phaser.GameObjects.Sprite {
 
         var config = {
             key: 'walk-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [7,15,23,31]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [15,16,17,18]}),
+            frameRate: 15,
+            repeat: -1
+        };
+        scene.anims.create(config);
+        
+        var config = {
+            key: 'walk-left',
+            frames: scene.anims.generateFrameNumbers('player', { frames: [19,20,21,22]}),
             frameRate: 15,
             repeat: -1
         };
@@ -132,7 +149,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         // standing
         let currentDirection = this.direction;
-        if (this.direction === 'left') { currentDirection = 'right'; } //account for flipped sprite
+        //if (this.direction === 'left') { currentDirection = 'left'; } //account for flipped sprite
         animationName = 'stand-' + currentDirection;
         
         // all the ways the player can move.
@@ -146,13 +163,13 @@ class Player extends Phaser.GameObjects.Sprite {
             if (left) {
                 this.direction = 'left';
                 this.body.setVelocityX(-this.vel);
-                animationName = "walk-right";
-                this.setFlipX(true);
+                animationName = "walk-left";
+                //this.setFlipX(true);
             } else if (right) {
                 this.direction = 'right';
                 this.body.setVelocityX(this.vel);
                 animationName = "walk-right";
-                this.setFlipX(false);
+                //this.setFlipX(false);
             }
 
             else if (up) {
@@ -169,14 +186,39 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.lastAnim = animationName;
                 this.anims.play(animationName, true);
             }
-        }
+        } else{
+            if (left) {
+                this.direction = 'left';
+                this.body.setVelocityX(-this.vel);
+                animationName = "walk-left";
+                //this.setFlipX(true);
+            } else if (right) {
+                this.direction = 'right';
+                this.body.setVelocityX(this.vel);
+                animationName = "walk-right";
+                //this.setFlipX(false);
+            }
 
+            else if (up) {
+                this.direction = 'up';
+                this.body.setVelocityY(-this.vel);
+                animationName = 'walk-up';
+            } else if (down) {
+                this.direction = 'down';
+                this.body.setVelocityY(this.vel);
+                animationName = 'walk-down';
+            }
+            if(this.lastAnim !== animationName) {
+                this.lastAnim = animationName;
+                this.anims.play(animationName, true);
+        }
+        }
         // Stairs
         if (this.onStairs) {
             this.vel = 50;
             this.onStairs = false;
         } else {
-            this.vel = 200;
+            this.vel = 150;
         }
         
         // Ponto de interesse
@@ -260,5 +302,4 @@ class Player extends Phaser.GameObjects.Sprite {
            this.Key_RIGHT.reset();
         
     }
-    
 }

@@ -8,15 +8,16 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.setPosition(x, y);
         this.tint=0x000000;
         this.body.setCollideWorldBounds(true);
-        this.body.setOffset(16, 31);
-        this.body.setCircle(4);
+        this.body.setOffset(11.5, 23);
+        this.body.width=8;
+        this.body.height=8;
      
      
      this.direction = 'down';
 
-        config = {
+         config = {
             key: 'stand-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [3,11,19]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [6,7,8]}),
             frameRate: 3,
             repeat: -1
         };
@@ -24,7 +25,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [0,8]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [0,1]}),
             frameRate: 3,
             repeat: -1
         };
@@ -32,16 +33,23 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [6,14]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [13,14]}),
             frameRate: 3,
             repeat: -1
         };
         scene.anims.create(config);
 
-
+         config = {
+            key: 'stand-left',
+            frames: scene.anims.generateFrameNumbers('player', { frames: [23,24]}),
+            frameRate: 3,
+            repeat: -1
+        };
+        scene.anims.create(config)
+     
         var config = {
             key: 'walk-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [4,12,20,28]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [9,10,11,12]}),
             frameRate: 15,
             repeat: -1
         };
@@ -49,7 +57,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         var config = {
             key: 'walk-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [1,9,17,25] }),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [2,3,4,5] }),
             frameRate: 15,
             repeat: -1
         };
@@ -57,10 +65,19 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         var config = {
             key: 'walk-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [7,15,23,31]}),
+            frames: scene.anims.generateFrameNumbers('player', { frames: [15,16,17,18]}),
             frameRate: 15,
             repeat: -1
         };
+        scene.anims.create(config);
+     
+     var config = {
+            key: 'walk-left',
+            frames: scene.anims.generateFrameNumbers('player', { frames: [19,20,21,22]}),
+            frameRate: 15,
+            repeat: -1
+        };
+        scene.anims.create(config);
  }
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
