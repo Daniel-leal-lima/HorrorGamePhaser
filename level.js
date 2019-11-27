@@ -121,11 +121,11 @@ class Jogo extends Phaser.Scene {
          const objectLayer = this.map.getObjectLayer("navmesh");
          this.navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
-        //this.navMesh.enableDebug();
-       /* this.navMesh.debugDrawMesh({
+        this.navMesh.enableDebug();
+        this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
-    });*/
+    });
         
         
         
@@ -360,7 +360,6 @@ class Jogo extends Phaser.Scene {
 
             this.cameras.main.fadeOut(250, 0, 0, 0, function(camera, progress) {
                 this.player.canMove = false;
-                //this.player;
                 if (progress === 1) {
                     // Change camera boundaries when fade out complete.
                     this.cameras.main.setBounds(this.rooms[this.player.currentRoom].x,
@@ -377,6 +376,7 @@ class Jogo extends Phaser.Scene {
                             this.Aleatorio = Phaser.Math.Between(0, 1);//calcula a probabilidade do inimigo aparecer
                             console.log(this.Aleatorio);
                             if(this.Aleatorio==1){
+                                this.cameras.main.flash(1200);
                                 this.inimigo.x = this.player.x;
                                 this.inimigo.x = this.player.y;
                             }
@@ -389,7 +389,6 @@ class Jogo extends Phaser.Scene {
         2 + this.player.body.offset.x, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y, this.navMesh);
 
-       // game.physics.arcade.collide(item, player);
     }
     
     coleta(jogador,item){
