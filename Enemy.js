@@ -7,6 +7,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
  this.setTexture('player');
         this.setPosition(x, y);
         this.tint=0x000000;
+
         this.body.setCollideWorldBounds(true)
         this.setOrigin(0);
         this.body.setOffset(11.5, 23);

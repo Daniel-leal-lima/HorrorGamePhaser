@@ -94,9 +94,11 @@ class Jogo extends Phaser.Scene {
 
     /** Setup level. */
     create() {
+
       
         this.HasChave0 = false;
         this.HasChave1 = false;
+
 
         this.contador=0; // Variavel contador para Itens
         
@@ -126,10 +128,12 @@ class Jogo extends Phaser.Scene {
         
         this.navMesh.enableDebug();
 
+
         /*this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
     });*/
+
 
         
         
@@ -154,6 +158,8 @@ class Jogo extends Phaser.Scene {
         this.warp = this.physics.add.group();//Warp nos cenários
         this.item = this.physics.add.group();
         this.doors = this.physics.add.group();
+
+
 
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
@@ -180,12 +186,14 @@ class Jogo extends Phaser.Scene {
             //poit - ponto de interesse do jogador
             if (object.type === 'poit') {
                 this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
+
                 this.Prox_porta.body.immovable = true;   
                 this.Prox_porta.setOrigin(0);
                 this.Prox_porta.body.height = object.height;
                  this.Prox_porta.body.width = object.width;
                  this.Prox_porta.varial = object.name;
                  this.Prox_porta.ativo = false;
+
 
                 //if(this.Prox_porta.varial == 'Porta 1'){this.Prox_porta.ativo
             }
@@ -252,6 +260,7 @@ class Jogo extends Phaser.Scene {
 
        this.physics.add.collider(this.player,  this.inimigo, function(){ //inimigo toca no personagem
 
+
             console.log('te peguei');
             this.scene.stop();
             this.scene.start('gameover'); 
@@ -287,6 +296,8 @@ class Jogo extends Phaser.Scene {
         this.mask = spotlight.createBitmapMask();
 
 
+
+
        
         let h;
         let w;
@@ -294,7 +305,9 @@ class Jogo extends Phaser.Scene {
         let offy;
         this.DIRECTIONS = ['up', 'right', 'down', 'left'];
 
+
         this.speed = 120;
+
         
         this.pausado = false;
         this.keyObj1 = this.input.keyboard.addKey('x');
@@ -353,7 +366,9 @@ class Jogo extends Phaser.Scene {
             } 
         },this);
     }
+
 }
+
 
     /** Update called every tick. */
     update(time, delta) {
@@ -390,10 +405,12 @@ class Jogo extends Phaser.Scene {
                             if(this.Aleatorio==1){
                                 this.cameras.main.flash(1200);
 
+
                                 this.inimigo.x = Phaser.Math.Between(this.rooms[this.player.currentRoom].x,
                                                                      this.rooms[this.player.currentRoom].x +this.rooms[this.player.currentRoom].width)
                                 this.inimigo.y = Phaser.Math.Between(this.rooms[this.player.currentRoom].y,
                                                                      this.rooms[this.player.currentRoom].y +this.rooms[this.player.currentRoom].height)
+
                             }
                         }
                     }, this);
@@ -437,6 +454,7 @@ class Jogo extends Phaser.Scene {
             this.HasChave1 = true;
         }
         
+
     }
     Leva(jogador,warp){
         console.log(warp.ID);
@@ -459,6 +477,7 @@ class Jogo extends Phaser.Scene {
                 break;
         }
     }
+
 
     retornaChave(ponto){
         if((ponto == 'Porta 1')&&(this.HasChave0)){
@@ -488,6 +507,7 @@ class Jogo extends Phaser.Scene {
                     case 'Porta 1':
                         this.player.Localiza_porta=1;
 
+
                         this.Armazena = [this.doors.getChildren()[0],
                                          this.doors.getChildren()[1]];
                         break;
@@ -501,6 +521,7 @@ class Jogo extends Phaser.Scene {
                 }
                 if(this.player.Porta_aberta){
                     //this.player.Porta_Aberta = false;
+
 
                     this.player.onPoit = false;
                     this.player.Porta_aberta = false;
@@ -541,7 +562,9 @@ class Jogo extends Phaser.Scene {
         if (roomNumber == 4) {
             this.cameras.main.shake(2500, 0.001, true);
 
+
             console.log(this.player.visited)
+
 
         }
     }
@@ -570,16 +593,19 @@ class Jogo extends Phaser.Scene {
     */
     if (path) {
 
+
         /*if (path.length === 2 && Math.abs(path[1].x - trueX) < 5
         && Math.abs(path[1].y - trueY) < 5) {
         this.idlehere();
         return;
 }*/
 
+
         // confusing code
         Math.abs(path[1].x - trueX) >= Math.abs(path[1].y - trueY) ?
          this.moveInDirection(((path[1].x - trueX < 0)*2)+1, false) :
           this.moveInDirection((path[1].y - trueY > 0)*2, false);
+
 
         }/*else{
             this.idlehere();
@@ -593,6 +619,7 @@ class Jogo extends Phaser.Scene {
     this.inimigo.anims.play('stand-' + this.inimigo.direction, true);
 
      }*/
+
        moveInDirection(direction, sprint) {
         let dir = '';
         if (_.isString(direction) && _.includes(DIRECTIONS, direction)) {
