@@ -94,10 +94,8 @@ class Jogo extends Phaser.Scene {
 
     /** Setup level. */
     create() {
-      
         this.HasChave0 = false;
         this.HasChave1 = false;
-
         this.contador=0; // Variavel contador para Itens
         
         // Make map of level 1.
@@ -125,12 +123,10 @@ class Jogo extends Phaser.Scene {
          this.navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
         this.navMesh.enableDebug();
-
         /*this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
     });*/
-
         
         
         
@@ -154,7 +150,6 @@ class Jogo extends Phaser.Scene {
         this.warp = this.physics.add.group();//Warp nos cenários
         this.item = this.physics.add.group();
         this.doors = this.physics.add.group();
-
         // Loop through all the objects.
         this.map.findObject('Objects', function(object) {
 
@@ -180,13 +175,13 @@ class Jogo extends Phaser.Scene {
             //poit - ponto de interesse do jogador
             if (object.type === 'poit') {
                 this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                this.Prox_porta.isPorta = true;
                 this.Prox_porta.body.immovable = true;   
                 this.Prox_porta.setOrigin(0);
                 this.Prox_porta.body.height = object.height;
                  this.Prox_porta.body.width = object.width;
                  this.Prox_porta.varial = object.name;
                  this.Prox_porta.ativo = false;
-
                 //if(this.Prox_porta.varial == 'Porta 1'){this.Prox_porta.ativo
             }
             
@@ -245,13 +240,11 @@ class Jogo extends Phaser.Scene {
         
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.collides); // colisões
-
         //this.physics.add.collider(this.inimigo,  this.collides); // colisões
         this.physics.add.collider(this.player,  this.doors); // portas
         this.physics.add.collider(this.player,  this.warp, this.Leva, null, this); // portas
 
        this.physics.add.collider(this.player,  this.inimigo, function(){ //inimigo toca no personagem
-
             console.log('te peguei');
             this.scene.stop();
             this.scene.start('gameover'); 
@@ -285,15 +278,12 @@ class Jogo extends Phaser.Scene {
         key: 'mask',
         add: false});
         this.mask = spotlight.createBitmapMask();
-
-
        
         let h;
         let w;
         let offx;
         let offy;
         this.DIRECTIONS = ['up', 'right', 'down', 'left'];
-
         this.speed = 120;
         
         this.pausado = false;
@@ -353,7 +343,6 @@ class Jogo extends Phaser.Scene {
             } 
         },this);
     }
-}
 
     /** Update called every tick. */
     update(time, delta) {
@@ -389,7 +378,7 @@ class Jogo extends Phaser.Scene {
                             console.log(this.Aleatorio);
                             if(this.Aleatorio==1){
                                 this.cameras.main.flash(1200);
-
+                                this.inimigo.x = this.player.x;
                                 this.inimigo.x = Phaser.Math.Between(this.rooms[this.player.currentRoom].x,
                                                                      this.rooms[this.player.currentRoom].x +this.rooms[this.player.currentRoom].width)
                                 this.inimigo.y = Phaser.Math.Between(this.rooms[this.player.currentRoom].y,
@@ -429,7 +418,6 @@ class Jogo extends Phaser.Scene {
             this.cameras.main.setMask(this.mask);
         }
         
-
         else if(item.texture.key=='chave'){
             this.HasChave0 = true;
         }
@@ -459,7 +447,6 @@ class Jogo extends Phaser.Scene {
                 break;
         }
     }
-
     retornaChave(ponto){
         if((ponto == 'Porta 1')&&(this.HasChave0)){
             return true;
@@ -480,14 +467,12 @@ class Jogo extends Phaser.Scene {
                 this.player.onPoit = true;
                 if(this.retornaChave(ponto.varial)){
                 this.player.LeftPorta=true;
-
                 this.player.tilecamada = this.colisao;
                 this.player.mapa = this.map;
                 //console.log(this.doors);
                 switch(ponto.varial){
                     case 'Porta 1':
                         this.player.Localiza_porta=1;
-
                         this.Armazena = [this.doors.getChildren()[0],
                                          this.doors.getChildren()[1]];
                         break;
@@ -496,12 +481,10 @@ class Jogo extends Phaser.Scene {
                         this.Armazena = [this.doors.getChildren()[2],
                                          this.doors.getChildren()[3]];
                         
-
                         break;
                 }
                 if(this.player.Porta_aberta){
                     //this.player.Porta_Aberta = false;
-
                     this.player.onPoit = false;
                     this.player.Porta_aberta = false;
                     if(ponto.varial=='Porta 1'){
@@ -540,9 +523,7 @@ class Jogo extends Phaser.Scene {
     roomStart(roomNumber) {
         if (roomNumber == 4) {
             this.cameras.main.shake(2500, 0.001, true);
-
             console.log(this.player.visited)
-
         }
     }
      findPath(start, finish) {
@@ -569,18 +550,15 @@ class Jogo extends Phaser.Scene {
     *  3. left
     */
     if (path) {
-
         /*if (path.length === 2 && Math.abs(path[1].x - trueX) < 5
         && Math.abs(path[1].y - trueY) < 5) {
         this.idlehere();
         return;
 }*/
-
         // confusing code
         Math.abs(path[1].x - trueX) >= Math.abs(path[1].y - trueY) ?
          this.moveInDirection(((path[1].x - trueX < 0)*2)+1, false) :
           this.moveInDirection((path[1].y - trueY > 0)*2, false);
-
         }/*else{
             this.idlehere();
         }*/

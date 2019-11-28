@@ -233,14 +233,12 @@ class Player extends Phaser.GameObjects.Sprite {
                 
                 switch(this.Localiza_porta){
                     case 1:
-
                         this.mapa.putTileAt(1, 31, 22,false ,this.tilecamada);
                         this.mapa.putTileAt(1, 32, 22,false ,this.tilecamada);
                         break;
                     case 2:
                         this.mapa.putTileAt(1, 13, 26,false ,this.tilecamada);
                         this.mapa.putTileAt(1, 14, 26,false ,this.tilecamada);
-
                         break;
                 }
                 this.Porta_aberta = true;
