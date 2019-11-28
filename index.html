@@ -39,8 +39,10 @@
              */
             constructor(config) {
                 super(config);
-                this.scene.add('menu', Menu, true);
-                this.scene.add('jogo', Jogo, false);
+
+                this.scene.add('menu', Menu, false);
+                this.scene.add('jogo', Jogo, true);
+
                 this.scene.add('pause', Pause, false);//adiciona cena
                 this.scene.add('gameover', GameOver ,false);
             }

@@ -1,3 +1,4 @@
+
 class  Menu extends Phaser.Scene{
 	constructor(){
 			super({key: 'menu'});
@@ -41,7 +42,6 @@ class  Menu extends Phaser.Scene{
         //this.setTint(0xff0000);
         this.scene.stop();
         this.scene.start('jogo');
-        
 
     },this);
 
