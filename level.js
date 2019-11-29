@@ -87,13 +87,45 @@ class Jogo extends Phaser.Scene {
         this.load.image('ab', 'img/ab.png');
         this.load.image('HUD', "img/inventario.png");
         this.load.image('CAM', "img/Cam.png");
-
-        //var item;
-
+        
+        
+        // SOM
+        this.load.audio('Chuva', ['audio/Chuva.ogg','audio/Chuva.mp3']);
+        this.load.audio('Trovao', ['audio/Trovao.ogg','audio/Trovao.mp3']);
     }
 
     /** Setup level. */
     create() {
+        //Som da Chuva
+        this.Som_chuva = this.sound.add('Chuva', {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: true,
+    delay: 0
+        });
+        this.Som_chuva.play();
+        //Som do trovao
+        this.Som_Trovao = this.sound.add('Trovao', {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 1,
+    seek: 0,
+    loop: false,
+    delay: 0
+        });
+        this.Som_Trovao_aux = this.sound.add('Trovao', {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 2,
+    seek: 0,
+    loop: false,
+    delay: 0
+        });
         this.Perseguir=false
         this.HasChave0 = false;
         this.HasChave1 = false;
@@ -379,6 +411,9 @@ class Jogo extends Phaser.Scene {
                             this.Aleatorio = Phaser.Math.Between(0, 1);//calcula a probabilidade do inimigo aparecer
                             console.log(this.Aleatorio);
                             if(this.Aleatorio==1){
+                                if(!this.Som_Trovao.isPlaying){
+                                this.Som_Trovao.play();
+                                }else{this.Som_Trovao_aux.play();}
                                 this.Perseguir = true;
                                 this.cameras.main.flash(1200);
                                 this.inimigo.x = this.player.x;
