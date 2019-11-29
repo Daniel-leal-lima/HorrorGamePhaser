@@ -25,6 +25,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
         this.setTexture('player');
         this.setPosition(x, y);
+        
         this.setOrigin(0);
         this.body.setCollideWorldBounds(true);
         this.body.setOffset(11.5, 23);
@@ -42,9 +43,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.Key_DOWN = scene.input.keyboard.addKey('DOWN');
 
         this.lastAnim = null;
-
         this.vel = 90;
-
         this.onStairs = false;
         this.onPoit = false;
         this.Localiza_porta = 0;
@@ -129,7 +128,6 @@ class Player extends Phaser.GameObjects.Sprite {
         this.aperta=false;
         this.keyObj0 = scene.input.keyboard.addKey('E');
         this.keyObj0.on('down', function(event){
-
             if(this.onPoit){
              this.aperta=true;
             }
@@ -229,32 +227,24 @@ class Player extends Phaser.GameObjects.Sprite {
         // Ponto de interesse
         if (this.onPoit) {
             this.sprite1.setVisible(true);
-
             
-
             if((this.LeftPorta)&&(this.aperta)){
                 this.aperta=false;
                 
                 switch(this.Localiza_porta){
                     case 1:
-
-
                         this.mapa.putTileAt(1, 31, 22,false ,this.tilecamada);
                         this.mapa.putTileAt(1, 32, 22,false ,this.tilecamada);
                         break;
                     case 2:
                         this.mapa.putTileAt(1, 13, 26,false ,this.tilecamada);
                         this.mapa.putTileAt(1, 14, 26,false ,this.tilecamada);
-
-
                         break;
                 }
                 this.Porta_aberta = true;
                console.log('Interação Funcionando');
                }
-
             this.onPoit = false;
-
         } else {
             //sumir com o sprite
            this.sprite1.setVisible(false);
@@ -287,13 +277,11 @@ class Player extends Phaser.GameObjects.Sprite {
                 roomNumber = room;
 
                 // Set this room as visited by player.
-
                 this.visited = this.scene.rooms[room].properties.find(function(property) {
                     return property.name === 'visited';
                 } );
 
                 this.visited.value = true
-
             }
         }
 
