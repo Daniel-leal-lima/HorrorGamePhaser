@@ -94,6 +94,7 @@ class Jogo extends Phaser.Scene {
 
     /** Setup level. */
     create() {
+        this.Perseguir=false
         this.HasChave0 = false;
         this.HasChave1 = false;
         this.contador=0; // Variavel contador para Itens
@@ -113,7 +114,7 @@ class Jogo extends Phaser.Scene {
         this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
         this.colisao = this.map.createDynamicLayer("colisao", [tileset1,tileset2,tileset3]);//mudar para Doors
         this.rachaduras = this.map.createStaticLayer("rachaduras paredes", [tileset1,tileset2,tileset3]);
-        this.front = this.map.createStaticLayer("passamos por tras disso", [tileset1,tileset2,tileset3]);
+        
         
         
        // this.item.collide = true;
@@ -123,10 +124,10 @@ class Jogo extends Phaser.Scene {
          this.navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
         this.navMesh.enableDebug();
-        /*this.navMesh.debugDrawMesh({
+        this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
-    });*/
+    });
         
         
         
@@ -236,12 +237,13 @@ class Jogo extends Phaser.Scene {
             }
         }, this);
 
+        this.front = this.map.createStaticLayer("passamos por tras disso", [tileset1,tileset2,tileset3]);
         // Add collisions.
         
         this.physics.add.overlap(this.player, this.item, this.coleta, null, this);
         this.physics.add.collider(this.player,  this.collides); // colisões
-        //this.physics.add.collider(this.inimigo,  this.collides); // colisões
         this.physics.add.collider(this.player,  this.doors); // portas
+        this.physics.add.collider(this.inimigo,  this.doors);
         this.physics.add.collider(this.player,  this.warp, this.Leva, null, this); // portas
 
        this.physics.add.collider(this.player,  this.inimigo, function(){ //inimigo toca no personagem
@@ -377,6 +379,7 @@ class Jogo extends Phaser.Scene {
                             this.Aleatorio = Phaser.Math.Between(0, 1);//calcula a probabilidade do inimigo aparecer
                             console.log(this.Aleatorio);
                             if(this.Aleatorio==1){
+                                this.Perseguir = true;
                                 this.cameras.main.flash(1200);
                                 this.inimigo.x = this.player.x;
                                 this.inimigo.x = Phaser.Math.Between(this.rooms[this.player.currentRoom].x,
@@ -384,15 +387,22 @@ class Jogo extends Phaser.Scene {
                                 this.inimigo.y = Phaser.Math.Between(this.rooms[this.player.currentRoom].y,
                                                                      this.rooms[this.player.currentRoom].y +this.rooms[this.player.currentRoom].height)
                             }
+                            else{
+                                this.Perseguir = false;
+                            }
                         }
                     }, this);
                 }
             }, this);
         }
+        //Ativa perseguição
+        if(this.Perseguir){
         this.gotoXY(this.player.x+this.player.body.width /
         2 + this.player.body.offset.x, this.player.y+this.player.body.height /
         2 + this.player.body.offset.y, this.navMesh);
-
+        }else{
+            this.ParaPerseguir();
+        }
     }
     
     coleta(jogador,item){
@@ -444,6 +454,22 @@ class Jogo extends Phaser.Scene {
             case 'warp4':
                 this.player.x= 1172;
                 this.player.y= 1065;
+                break;
+            case 'warp5':
+                this.player.x= 932;
+                this.player.y= 544;
+                break;
+            case 'warp6':
+                this.player.x= 907;
+                this.player.y= 634;
+                break;
+            case 'warp7':
+                this.player.x= 447;
+                this.player.y= 1151;
+                break;
+            case 'warp8':
+                this.player.x= 560;
+                this.player.y= 1152;
                 break;
         }
     }
@@ -559,18 +585,23 @@ class Jogo extends Phaser.Scene {
         Math.abs(path[1].x - trueX) >= Math.abs(path[1].y - trueY) ?
          this.moveInDirection(((path[1].x - trueX < 0)*2)+1, false) :
           this.moveInDirection((path[1].y - trueY > 0)*2, false);
-        }/*else{
+        }else{
+          this.ParaPerseguir(); 
+        }
+        
+        /*else{
             this.idlehere();
         }*/
     }
-    /* idlehere(){
-         
+     ParaPerseguir(){
+    this.inimigo.x= 782;
+    this.inimigo.y= 114;     
     this.inimigo.body.velocity.x = 0;
     this.inimigo.body.velocity.y = 0;
          this.direcao ='down';
     this.inimigo.anims.play('stand-' + this.inimigo.direction, true);
 
-     }*/
+     }
        moveInDirection(direction, sprint) {
         let dir = '';
         if (_.isString(direction) && _.includes(DIRECTIONS, direction)) {

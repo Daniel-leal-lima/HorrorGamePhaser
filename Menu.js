@@ -33,14 +33,15 @@ class  Menu extends Phaser.Scene{
             frames: this.anims.generateFrameNumbers('menu', { frames: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,
                                                                       13,14,15,16,17,18,19,20,21,22]}),
             frameRate: 8,
-            repeat: -1
+            repeat: -1,
+            yoyo:true
         };
         this.anims.create(this.config);
         
         this.menuimage.anims.play('chuva', false);
        
         this.markers = [
-    { name: 'alien death', start: 1, duration: 30, config:{volume: 5,loop:true},},
+    { name: 'alien death', start: 1, duration: 30, config:{volume: 5,loop:true}},
     { name: 'boss hit', start: 9, duration: 29, config: {volume: 5,loop:true,delay:1} },
     { name: 'escape', start: 4, duration: 3.2, config: {} },
     { name: 'meow', start: 8, duration: 0.5, config: {} },
@@ -51,9 +52,10 @@ class  Menu extends Phaser.Scene{
     { name: 'squit', start: 19, duration: 0.3, config: {} }
 ];
             console.log('menu iniciado');
-           
-        this.music = this.sound.play('Tema', this.markers[1]);
-    
+        this.music =  this.sound.add('Tema');
+        this.music.addMarker(this.markers[1]);
+        this.music.play('boss hit');
+        
         
     var sprite = this.add.sprite(40, 200, 'botao').setInteractive();
     sprite.scale = .4;
@@ -61,6 +63,7 @@ class  Menu extends Phaser.Scene{
     sprite.on('pointerdown', function (pointer) {
 
         //this.setTint(0xff0000);
+        this.music.stop();
         this.menuimage.anims.stop();
         this.menuimage.destroy();
         this.scene.stop();
