@@ -55,6 +55,16 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       
                           spacing: 0}      
         });
+        this.load.spritesheet({
+            key: 'chave2',
+            url: "img/New Piskel-2.png.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32,
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}      
+        });
         
         this.load.spritesheet({
             key: 'lanterna',
@@ -99,7 +109,7 @@ class Jogo extends Phaser.Scene {
         //Som da Chuva
         this.Som_chuva = this.sound.add('Chuva', {
     mute: false,
-    volume: 1,
+    volume: .8,
     rate: 1,
     detune: 0,
     seek: 0,
@@ -156,10 +166,11 @@ class Jogo extends Phaser.Scene {
          this.navMesh = this.navMeshPlugin.buildMeshFromTiled( "mesh",objectLayer,16);//criar uma camada navmesh no nosso projeto
         
         this.navMesh.enableDebug();
-        this.navMesh.debugDrawMesh({
+        //Debuga Draw Mesh
+        /*this.navMesh.debugDrawMesh({
         drawCentroid: false, drawBounds: false,
          drawNeighbors: false, drawPortals: false,
-    });
+    });*/
         
         
         
@@ -207,14 +218,26 @@ class Jogo extends Phaser.Scene {
             
             //poit - ponto de interesse do jogador
             if (object.type === 'poit') {
+                
                 this.poit.add(this.Prox_porta = new Phaser.GameObjects.Sprite(this, object.x, object.y));
+                
+                if((object.name == 'Porta 1')||(object.name == 'Porta 2')){
                 this.Prox_porta.isPorta = true;
                 this.Prox_porta.body.immovable = true;   
                 this.Prox_porta.setOrigin(0);
                 this.Prox_porta.body.height = object.height;
                  this.Prox_porta.body.width = object.width;
                  this.Prox_porta.varial = object.name;
-                 this.Prox_porta.ativo = false;
+                }
+                else{
+                    //aaaaaaaaaaaaaaaaaaaaa
+                this.Prox_porta.isItem = true;
+                this.Prox_porta.body.immovable = true;   
+                this.Prox_porta.setOrigin(0);
+                this.Prox_porta.body.height = object.height;
+                this.Prox_porta.body.width = object.width;
+                this.Prox_porta.varial = object.name;
+                }
                 //if(this.Prox_porta.varial == 'Porta 1'){this.Prox_porta.ativo
             }
             
@@ -284,7 +307,7 @@ class Jogo extends Phaser.Scene {
             this.scene.start('gameover'); 
         },null,this);
         
-        this.physics.add.overlap(this.player,   this.poit, this.porta, null, this);
+        this.physics.add.overlap(this.player,   this.poit, this.Interagir, null, this);
 
         // start camera
         this.cameras.main.setZoom(2);
@@ -519,12 +542,10 @@ class Jogo extends Phaser.Scene {
             return false;
         }
     }
-    porta(jogador, ponto){
+    Interagir(jogador, ponto){
             //console.log(ponto.varial);
-            console.log(ponto.ativo);
             //console.log(ponto);
-            
-            if((ponto.isPorta)&&(ponto.ativo==false)){
+            if(ponto.isPorta){
                 this.player.onPoit = true;
                 if(this.retornaChave(ponto.varial)){
                 this.player.LeftPorta=true;
@@ -548,6 +569,7 @@ class Jogo extends Phaser.Scene {
                     //this.player.Porta_Aberta = false;
                     this.player.onPoit = false;
                     this.player.Porta_aberta = false;
+                    ponto.destroy();
                     if(ponto.varial=='Porta 1'){
                     this.Armazena[0].body.x=993;
                     this.Armazena[0].body.y=704;
@@ -570,15 +592,27 @@ class Jogo extends Phaser.Scene {
                     this.Armazena[1].body.height=32;
                     this.Armazena[1].body.width=5;  
                     }
-                    //this.player.onPoit = false;
-                    ponto.ativo = true;
                     this.player.LeftPorta=false;
                     
                 
                     //console.log(this.doors.getChildren()[1].body); -->escolha da porta para  modificá-la a partir do index.
                     }
+                }else{
+                    //CASO O JOGADOR Não tenha a chave
                 }
                 
+            }else if(ponto.isItem){
+                this.player.onPoit = true;
+                if(this.player.aperta){
+                switch(ponto.varial){
+                    case 'Nota_area':
+                        this.Pega_Objeto = this.item.getChildren()[0];
+                        break;
+                }
+                //console.log(this.Pega_Objeto);//aaaaaaaaaaaaaaaaaa
+                this.coleta(this.player,this.Pega_Objeto);
+                ponto.destroy();
+                }
             }
     }
     roomStart(roomNumber) {

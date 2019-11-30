@@ -40,22 +40,18 @@ class  Menu extends Phaser.Scene{
         
         this.menuimage.anims.play('chuva', false);
        
-        this.markers = [
-    { name: 'alien death', start: 1, duration: 30, config:{volume: 5,loop:true}},
-    { name: 'boss hit', start: 9, duration: 29, config: {volume: 5,loop:true,delay:1} },
-    { name: 'escape', start: 4, duration: 3.2, config: {} },
-    { name: 'meow', start: 8, duration: 0.5, config: {} },
-    { name: 'numkey', start: 9, duration: 0.1, config: {} },
-    { name: 'ping', start: 10, duration: 1.0, config: {} },
-    { name: 'death', start: 12, duration: 4.2, config: {} },
-    { name: 'shot', start: 17, duration: 1.0, config: {} },
-    { name: 'squit', start: 19, duration: 0.3, config: {} }
-];
+        this.markers = [{ name: 'loop', start: 9, duration: 30, config:{volume: 5}},
+                       { name: 'loop2', start: 21.980, duration: 30, config:{volume: 5}}];
             console.log('menu iniciado');
         this.music =  this.sound.add('Tema');
+        this.music.addMarker(this.markers[0]);
         this.music.addMarker(this.markers[1]);
-        this.music.play('boss hit');
+        this.music.play('loop');
+     2
         
+        this.music.on('complete', function(music){
+            music.play('loop2');
+        });
         
     var sprite = this.add.sprite(40, 200, 'botao').setInteractive();
     sprite.scale = .4;
@@ -86,6 +82,9 @@ class  Menu extends Phaser.Scene{
 
 
 
+    }
+    update(){
+        
     }
 }
 
