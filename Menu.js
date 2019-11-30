@@ -5,6 +5,8 @@ class  Menu extends Phaser.Scene{
 
     preload(){
         //this.load.image("menu","img/provisorio.jpg");
+        this.load.image("tuto","img/tutorial1.jpg")
+
         this.load.spritesheet({
             key: 'menu',
             url: "img/mansao.png",
@@ -47,11 +49,23 @@ class  Menu extends Phaser.Scene{
         this.music.addMarker(this.markers[0]);
         this.music.addMarker(this.markers[1]);
         this.music.play('loop');
-     2
+     
         
         this.music.on('complete', function(music){
             music.play('loop2');
         });
+
+            var sprite_tutorial = this.add.sprite(40, 100, 'tuto').setInteractive();
+    sprite_tutorial.scale = .2;
+
+    sprite_tutorial.on('pointerdown', function (pointer) {
+
+        //this.setTint(0xff0000);
+        this.scene.pause();
+        this.scene.launch('tutorial');
+        
+
+    },this);
         
     var sprite = this.add.sprite(40, 200, 'botao').setInteractive();
     sprite.scale = .4;
