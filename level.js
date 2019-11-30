@@ -76,6 +76,17 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       
                           spacing: 0}      
         });
+        
+        this.load.spritesheet({
+            key: 'Diario',
+            url: "img/Diario.png",
+            frameConfig: {frameWidth: 32,  
+                          frameHeight: 32,
+                          startFrame: 0,   
+                          endFrame: 0,    
+                          margin: 0,       
+                          spacing: 0}      
+        });
 
 
        /* this.load.spritesheet({
@@ -470,7 +481,8 @@ class Jogo extends Phaser.Scene {
         
         this.Array_Pos_HUD = [{id:1,x:220,y:105},{id:2,x:245,y:105},
                               {id:3,x:271,y:105},{id:4,x:295,y:105},
-                              {id:5,x:322,y:105}]
+                              {id:5,x:322,y:105},{id:6,x:346,y:105},
+                              {id:6,x:370,y:105}]
             
             this.Hud_item = this.make.sprite({
             x: this.Array_Pos_HUD[this.contador].x,
