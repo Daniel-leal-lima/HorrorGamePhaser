@@ -4,9 +4,9 @@ class Enemy extends Phaser.GameObjects.Sprite {
  this.scene = scene;
  scene.physics.world.enable(this);
  scene.add.existing(this);
- this.setTexture('player');
+ this.setTexture('inimigo');
         this.setPosition(x, y);
-        this.tint=0x000000;
+        //this.tint=0x000000;
         this.body.setCollideWorldBounds(true);
         this.setOrigin(0);
         this.body.setOffset(11.5, 23);
@@ -15,10 +15,10 @@ class Enemy extends Phaser.GameObjects.Sprite {
      
      
      this.direction = 'down';
-
+/*
          config = {
             key: 'stand-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [6,7,8]}),
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [6,7,8]}),
             frameRate: 3,
             repeat: -1
         };
@@ -26,7 +26,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [0,1]}),
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [0,1]}),
             frameRate: 3,
             repeat: -1
         };
@@ -34,7 +34,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         config = {
             key: 'stand-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [13,14]}),
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [13,14]}),
             frameRate: 3,
             repeat: -1
         };
@@ -42,39 +42,39 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
          config = {
             key: 'stand-left',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [23,24]}),
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [23,24]}),
             frameRate: 3,
             repeat: -1
         };
-        scene.anims.create(config)
+        scene.anims.create(config)*/
      
         var config = {
-            key: 'walk-down',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [9,10,11,12]}),
+            key: 'anda-down',
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [0,1,2,3,4,5,6]}),
             frameRate: 15,
             repeat: -1
         };
         scene.anims.create(config);
 
         var config = {
-            key: 'walk-right',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [2,3,4,5] }),
+            key: 'anda-right',
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [12,13,14,15,16,17,18] }),
             frameRate: 15,
             repeat: -1
         };
         scene.anims.create(config);
 
         var config = {
-            key: 'walk-up',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [15,16,17,18]}),
+            key: 'anda-up',
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [7,8,9,10,11]}),
             frameRate: 15,
             repeat: -1
         };
         scene.anims.create(config);
      
      var config = {
-            key: 'walk-left',
-            frames: scene.anims.generateFrameNumbers('player', { frames: [19,20,21,22]}),
+            key: 'anda-left',
+            frames: scene.anims.generateFrameNumbers('inimigo', { frames: [19,20,21,22,23,24,25]}),
             frameRate: 15,
             repeat: -1
         };

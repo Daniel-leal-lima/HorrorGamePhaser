@@ -114,23 +114,6 @@
          "name":"Objects",
          "objects":[
                 {
-                 "height":577.93333333333,
-                 "id":1,
-                 "name":"1",
-                 "properties":[
-                        {
-                         "name":"visited",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"Room",
-                 "visible":true,
-                 "width":371.2,
-                 "x":147.2,
-                 "y":1126.4
-                }, 
-                {
                  "height":420,
                  "id":2,
                  "name":"2",
@@ -146,6 +129,23 @@
                  "width":716.133333333334,
                  "x":518.4,
                  "y":998.4
+                }, 
+                {
+                 "height":577.93333333333,
+                 "id":1,
+                 "name":"1",
+                 "properties":[
+                        {
+                         "name":"visited",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"Room",
+                 "visible":true,
+                 "width":371.2,
+                 "x":147.2,
+                 "y":1126.4
                 }, 
                 {
                  "height":603.333333333333,
@@ -231,17 +231,6 @@
                  "width":0,
                  "x":1328.4,
                  "y":842.6
-                }, 
-                {
-                 "height":19,
-                 "id":188,
-                 "name":"Chave",
-                 "rotation":0,
-                 "type":"item",
-                 "visible":true,
-                 "width":22,
-                 "x":1098,
-                 "y":1222.16666666667
                 }, 
                 {
                  "height":0,

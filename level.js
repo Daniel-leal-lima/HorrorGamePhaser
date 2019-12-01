@@ -23,6 +23,17 @@ class Jogo extends Phaser.Scene {
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
+        
+        this.load.spritesheet({
+            key: 'inimigo',
+            url: "img/inimigo.png",
+            frameConfig: {frameWidth: 32,  //The width of the frame in pixels.
+                          frameHeight: 32, //The height of the frame in pixels. Uses the frameWidth value if not provided.
+                          startFrame: 0,   //The first frame to start parsing from.
+                          endFrame: 24,    //The frame to stop parsing at. If not provided it will calculate the value based on the image and frame dimensions.
+                          margin: 0,       //The margin in the image. This is the space around the edge of the frames.
+                          spacing: 0}      //The spacing between each frame in the image.
+        });
         this.load.spritesheet({
             key: 'nota',
             url: "img/New Piskel-3.png.png",
@@ -152,7 +163,7 @@ class Jogo extends Phaser.Scene {
         this.HasChave1 = false;
         this.contador=0; // Variavel contador para Itens
         this.FIM = false;
-        this.warp_espelho = false;
+        this.item_coletado=[];
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
@@ -356,38 +367,60 @@ class Jogo extends Phaser.Scene {
         this.speed = 120;
         
         this.pausado = false;
-        this.keyObj1 = this.input.keyboard.addKey('x');
-        this.keyObj2 = this.input.keyboard.addKey('v');
-        
-         this.keyObj2.on('down', function(event){//Comando para teste
-             this.scene.start('desc','trombolho');// Linha de teste pra testar a criação da Cena descrição
+        this.keyObj1 = this.input.keyboard.addKey('ONE');
+        this.keyObj2 = this.input.keyboard.addKey('TWO');
+        this.keyObj3 = this.input.keyboard.addKey('THREE');
+        this.keyObj4 = this.input.keyboard.addKey('FOUR');
+        this.keyObj5 = this.input.keyboard.addKey('FIVE');
+        this.keyObj6 = this.input.keyboard.addKey('SIX');
+        this.keyObj7 = this.input.keyboard.addKey('SEVEN');
+        //this.keys = scene.input.keyboard.addKeys('1,2,3,4,5,6,7');
+         this.keyObj1.on('down', function(event){//Comando para teste
+             if(this.item_coletado[0]!=null){
+             this.scene.launch('desc',this.item_coletado[0]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
+             }
          },this);
-        
-        this.keyObj1.on('down', function(event){//Comando para teste
-             //console.log(this.map.getTileAt(26, 45, false, this.colisao));
-            //this.player.setPosition( [x] [, y] [, z] [, w])
-             this.player.x= 512;
-             this.player.y= 1152;
-            
-            this.tileColor = null;
-            this.colldingTileColor = new Phaser.Display.Color(243, 134, 48, 200);
-            this.faceColor = null;
-            this.debugGraphics = this.add.graphics();
-            this.map.renderDebug(this.debugGraphics, {
-        tileColor: this.tileColor,                   // Non-colliding tiles
-        collidingTileColor: this.colldingTileColor,  // Colliding tiles
-        faceColor: this.faceColor                   // Interesting faces, i.e. colliding edges
-    });
-        },this);
+        this.keyObj2.on('down', function(event){//Comando para teste
+             if(this.item_coletado[1]!=null){
+             this.scene.start('desc',this.item_coletado[1]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
+        this.keyObj3.on('down', function(event){//Comando para teste
+             if(this.item_coletado[2]!=null){
+             this.scene.start('desc',this.item_coletado[2]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
+        this.keyObj4.on('down', function(event){//Comando para teste
+             if(this.item_coletado[3]!=null){
+             this.scene.start('desc',this.item_coletado[3]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
+        this.keyObj5.on('down', function(event){//Comando para teste
+             if(this.item_coletado[4]!=null){
+             this.scene.start('desc',this.item_coletado[4]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
+        this.keyObj6.on('down', function(event){//Comando para teste
+             if(this.item_coletado[5]!=null){
+             this.scene.start('desc',this.item_coletado[5]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
+        this.keyObj7.on('down', function(event){//Comando para teste
+             if(this.item_coletado[6]!=null){
+             this.scene.start('desc',this.item_coletado[6]);// Linha de teste pra testar a criação da Cena descrição
+             }
+         },this);
         
         
         
         this.keyObj = this.input.keyboard.addKey('P');
         this.keyObj.on('down', function(event){
              this.scene.launch('pause');
-            this.scene.pause();
+             this.scene.pause();
         },this);
         this.events.on('resume', function () {
+            this.reseta_inventario_keys();
         },this);
         
         let image = this.make.sprite({
@@ -411,6 +444,7 @@ class Jogo extends Phaser.Scene {
                 if(object.name=='Lanterna'){
                 this.item.add(this.Item_Var = new Item(this, object.x, object.y,object.name));
                 this.Item_Var.body.immovable = true;
+                this.Item_Var.name = object.name;
                 console.log(this.item.body);
                 }
             } 
@@ -481,7 +515,6 @@ class Jogo extends Phaser.Scene {
     }
     
     coleta(jogador,item){
-        
         item.destroy();
         console.log(item.texture.key);
         
@@ -497,18 +530,19 @@ class Jogo extends Phaser.Scene {
             key: item.texture.key
             }).setScrollFactor(0);
          
+         this.item_coletado[this.contador]=item.name;
          this.contador++;
-        
+         console.log(this.item_coletado);
         if(item.texture.key=='lanterna'){
             this.Over_cam.destroy();
             this.cameras.main.setMask(this.mask);
         }
         
-        else if(item.texture.key=='chave'){
-            this.HasChave0 = true;
-        }
         else if(item.texture.key=='chave1'){
             this.HasChave1 = true;
+        }
+        else if(item.texture.key=='chave2'){
+            this.HasChave0 = true;
         }
         else if(item.name == 'Nota'){
             this.warp_espelho = true
@@ -565,9 +599,9 @@ class Jogo extends Phaser.Scene {
             this.player.x= 553;
             this.player.y= 1539;
         }
-        if((warp.ID == 'Espelho')&&(this.warp_espelho)){
+        if((warp.ID == 'Espelho')){
             this.player.x= 673;
-            this.player.y= 540;
+            this.player.y= 538;
         }
     }
     retornaChave(ponto){
@@ -648,7 +682,7 @@ class Jogo extends Phaser.Scene {
 	                   return objeto.name == ponto.varial;
                         });
 
-                console.log(this.Retorna[0]);//aaaaaaaaaaaaaaaaaa
+                console.log(this.Retorna[0]);//chaaaaaaaaaaaaaaa
                 this.coleta(this.player,this.Retorna[0]);
                 ponto.destroy();
                 this.player.onPoit = false;
@@ -748,7 +782,17 @@ class Jogo extends Phaser.Scene {
                 console.error('Invalid direction');
                 return;
         }
-        this.inimigo.anims.play('walk-' + dir, true);
+        this.inimigo.anims.play('anda-' + dir, true);
         //this.adjustHitbox('walk');
 }
+    reseta_inventario_keys(){
+        this.keyObj1.reset();
+        this.keyObj2.reset();
+        this.keyObj3.reset();
+        this.keyObj4.reset();
+        this.keyObj5.reset();
+        this.keyObj6.reset();
+        this.keyObj7.reset();
+           
+    }
 }

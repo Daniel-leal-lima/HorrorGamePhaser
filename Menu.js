@@ -17,7 +17,10 @@ class  Menu extends Phaser.Scene{
                           margin: 0,       //The margin in the image. This is the space around the edge of the frames.
                           spacing: 0}      //The spacing between each frame in the image.
         });
-		this.load.image("botao","img/play.png")
+        
+		this.load.image("botao","img/play.png");
+        
+        this.load.image("logo","img/logo.png")
           this.load.audio('Tema', [
         'audio/Menu.ogg',
         'audio/Menu.mp3']
