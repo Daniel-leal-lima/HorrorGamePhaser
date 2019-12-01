@@ -357,7 +357,11 @@ class Jogo extends Phaser.Scene {
         
         this.pausado = false;
         this.keyObj1 = this.input.keyboard.addKey('x');
+        this.keyObj2 = this.input.keyboard.addKey('v');
         
+         this.keyObj2.on('down', function(event){//Comando para teste
+             this.scene.start('desc','trombolho');// Linha de teste pra testar a criação da Cena descrição
+         },this);
         
         this.keyObj1.on('down', function(event){//Comando para teste
              //console.log(this.map.getTileAt(26, 45, false, this.colisao));
@@ -563,7 +567,7 @@ class Jogo extends Phaser.Scene {
         }
         if((warp.ID == 'Espelho')&&(this.warp_espelho)){
             this.player.x= 673;
-            this.player.y= 545;
+            this.player.y= 540;
         }
     }
     retornaChave(ponto){
