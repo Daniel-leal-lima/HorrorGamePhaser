@@ -246,6 +246,7 @@ class Player extends Phaser.GameObjects.Sprite {
                }
             this.onPoit = false;
         } else {
+            this.aperta=false;
             //sumir com o sprite
            this.sprite1.setVisible(false);
         }

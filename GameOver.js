@@ -24,8 +24,6 @@ create(){
         //this.setTint(0xff0000);
         this.scene.stop();
         this.scene.start('menu');
-        
-
     },this);
 	}
 }

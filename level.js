@@ -151,7 +151,8 @@ class Jogo extends Phaser.Scene {
         this.HasChave0 = false;
         this.HasChave1 = false;
         this.contador=0; // Variavel contador para Itens
-        
+        this.FIM = false;
+        this.warp_espelho = false;
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
@@ -219,6 +220,7 @@ class Jogo extends Phaser.Scene {
                 if(object.name!='Lanterna')
             this.item.add(this.Item_Var = new Item(this, object.x, object.y,object.name));
                 this.Item_Var.body.immovable = true;
+                this.Item_Var.name = object.name;
                 console.log(this.item.body);
             }
 
@@ -241,13 +243,12 @@ class Jogo extends Phaser.Scene {
                  this.Prox_porta.varial = object.name;
                 }
                 else{
-                    //aaaaaaaaaaaaaaaaaaaaa
                 this.Prox_porta.isItem = true;
                 this.Prox_porta.body.immovable = true;   
                 this.Prox_porta.setOrigin(0);
                 this.Prox_porta.body.height = object.height;
                 this.Prox_porta.body.width = object.width;
-                this.Prox_porta.varial = object.name;
+                this.Prox_porta.varial = object.name.replace('_area','');
                 }
                 //if(this.Prox_porta.varial == 'Porta 1'){this.Prox_porta.ativo
             }
@@ -472,6 +473,7 @@ class Jogo extends Phaser.Scene {
         }else{
             this.ParaPerseguir();
         }
+        
     }
     
     coleta(jogador,item){
@@ -504,10 +506,15 @@ class Jogo extends Phaser.Scene {
         else if(item.texture.key=='chave1'){
             this.HasChave1 = true;
         }
+        else if(item.name == 'Nota'){
+            this.warp_espelho = true
+        }
+        if(this.contador==7){
+            this.FIM = true;
+        }
         
     }
     Leva(jogador,warp){
-        console.log(warp.ID);
         switch(warp.ID){
             case 'warp1':
                 this.player.x= 1041;
@@ -541,6 +548,22 @@ class Jogo extends Phaser.Scene {
                 this.player.x= 560;
                 this.player.y= 1152;
                 break;
+            case 'warp9':
+                this.player.x= 673;
+                this.player.y= 630;
+                break;
+            case 'warp10':
+                this.scene.stop();
+                this.scene.start('Fim');
+                break;
+        }
+        if((warp.ID == 'Saida')&&(this.FIM)){
+            this.player.x= 553;
+            this.player.y= 1539;
+        }
+        if((warp.ID == 'Espelho')&&(this.warp_espelho)){
+            this.player.x= 673;
+            this.player.y= 545;
         }
     }
     retornaChave(ponto){
@@ -616,18 +639,20 @@ class Jogo extends Phaser.Scene {
             }else if(ponto.isItem){
                 this.player.onPoit = true;
                 if(this.player.aperta){
-                switch(ponto.varial){
-                    case 'Nota_area':
-                        this.Pega_Objeto = this.item.getChildren()[0];
-                        break;
-                }
-                //console.log(this.Pega_Objeto);//aaaaaaaaaaaaaaaaaa
-                this.coleta(this.player,this.Pega_Objeto);
+                    this.Array_Objetos = this.item.children.entries;
+                    this.Retorna =  this.Array_Objetos.filter(function(objeto) {
+	                   return objeto.name == ponto.varial;
+                        });
+
+                console.log(this.Retorna[0]);//aaaaaaaaaaaaaaaaaa
+                this.coleta(this.player,this.Retorna[0]);
                 ponto.destroy();
+                this.player.onPoit = false;
                 }
             }
     }
-    roomStart(roomNumber) {
+    
+    roomStart(roomNumber) {//aaaaaaaaaaaaaaa
         if (roomNumber == 4) {
             this.cameras.main.shake(2500, 0.001, true);
             console.log(this.player.visited)

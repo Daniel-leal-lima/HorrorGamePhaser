@@ -22,8 +22,6 @@ class Pause extends Phaser.Scene {
         scale:.5,
         key:'pauseimage'
       //  pauseimage.setAlpha(.3);
-
-        
 	});
     }
 }
