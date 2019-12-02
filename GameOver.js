@@ -4,13 +4,23 @@ class GameOver extends Phaser.Scene{
             		}
 
 preload(){
-	this.load.image('gameoverimage','img/game-over.jpg')
+	this.load.image('gameoverimage','img/game-over1.png')
 	this.load.image("botao1","img/voltar1.png")
+    this.load.audio('Violino', ['audio/VIOLINO.ogg','audio/VIOLINO.mp3']);
 }
 
 create(){
-	let gameoverimage = this.make.sprite({
-        x:280,
+    
+    this.markers1 = { name: 'violin', start: 1, duration: 2, config:{volume: 5}},
+                       
+    
+    
+    this.music =  this.sound.add('Violino');
+        this.music.addMarker(this.markers1);
+        this.music.play('violin');
+    
+	this.gameoverimage = this.make.sprite({
+        x:300,
         y:200,
         scale:1,
         key:'gameoverimage'
@@ -25,5 +35,19 @@ create(){
         this.scene.stop();
         this.scene.start('menu');
     },this);
+    
+    
 	}
+   update(){
+       if(this.gameoverimage.scale<=3.5){
+       this.gameoverimage.scale+=.09;
+       
+       }
+       else{
+            this.cameras.main.fadeIn(500,0,0,0);
+           this.scene.stop();
+           this.scene.start('jogo');
+
+       }
+   }
 }

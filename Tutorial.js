@@ -12,7 +12,7 @@ create(){
 	let movimento = this.make.sprite({
         x:300,
         y:180,
-        scale:.5,
+        scale:1,
         key:'movimento'
 	});
 

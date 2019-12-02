@@ -24,10 +24,6 @@ class Item extends Phaser.GameObjects.Sprite {
         this.setTexture('chave2');
             this.setScale(.4);
         }
-     /*else if(nome == 'Chave'){
-        this.setTexture('chave');
-        this.setScale(.4)
-     }*/
      else if((nome == 'Nota')||(nome == 'Nota2')||(nome == 'Nota3')){
         this.setTexture('nota');
         this.setScale(.4)

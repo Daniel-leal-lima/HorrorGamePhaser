@@ -57,16 +57,6 @@ class Jogo extends Phaser.Scene {
         });
 
         this.load.spritesheet({
-            key: 'chave',
-            url: "img/New Piskel.png",
-            frameConfig: {frameWidth: 32,  
-                          frameHeight: 32,
-                          startFrame: 0,   
-                          endFrame: 0,    
-                          margin: 0,       
-                          spacing: 0}      
-        });
-        this.load.spritesheet({
             key: 'chave2',
             url: "img/New Piskel-2.png.png",
             frameConfig: {frameWidth: 32,  
@@ -114,6 +104,7 @@ class Jogo extends Phaser.Scene {
         this.load.image("tile1", "map/Tile1.png");
         this.load.image("tile2", "map/floor.png");
         this.load.image("tile3", "map/base_out_atlas.png");
+        this.load.image("Porta_tile", "map/Porta.png");
         this.load.tilemapTiledJSON("level-1", "map/mapa32.json");
         this.load.image('mask', 'img/mask1.png');
         this.load.image('ab', 'img/ab.png');
@@ -172,12 +163,13 @@ class Jogo extends Phaser.Scene {
         const tileset1 = this.map.addTilesetImage("Tile1", "tile1"); 
         const tileset2 = this.map.addTilesetImage("floor", "tile2"); 
         const tileset3 = this.map.addTilesetImage("base_out_atlas", "tile3"); 
+        const tilesetPorta = this.map.addTilesetImage("Porta", "Porta_tile"); 
         
         // The map layers.
         this.floorLayer = this.map.createStaticLayer("chao", [tileset1,tileset2,tileset3]);
         this.wallsLayer = this.map.createStaticLayer("grama", [tileset1,tileset2,tileset3]);
         this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
-        this.colisao = this.map.createDynamicLayer("colisao", [tileset1,tileset2,tileset3]);//mudar para Doors
+        this.colisao = this.map.createDynamicLayer("colisao", [tilesetPorta]);//mudar para Doors
         this.rachaduras = this.map.createStaticLayer("rachaduras paredes", [tileset1,tileset2,tileset3]);
         
         
@@ -228,11 +220,12 @@ class Jogo extends Phaser.Scene {
             //items
             if (object.type === 'item') 
             {
-                if(object.name!='Lanterna')
+                if(object.name!='Lanterna'){
             this.item.add(this.Item_Var = new Item(this, object.x, object.y,object.name));
                 this.Item_Var.body.immovable = true;
                 this.Item_Var.name = object.name;
                 console.log(this.item.body);
+                }
             }
 
             // stairs
@@ -326,6 +319,7 @@ class Jogo extends Phaser.Scene {
 
        this.physics.add.collider(this.player,  this.inimigo, function(){ //inimigo toca no personagem
             console.log('te peguei');
+            this.Som_chuva.stop();
             this.scene.stop();
             this.scene.start('gameover'); 
         },null,this);
@@ -383,32 +377,38 @@ class Jogo extends Phaser.Scene {
          },this);
         this.keyObj2.on('down', function(event){//Comando para teste
              if(this.item_coletado[1]!=null){
-             this.scene.start('desc',this.item_coletado[1]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[1]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         this.keyObj3.on('down', function(event){//Comando para teste
              if(this.item_coletado[2]!=null){
-             this.scene.start('desc',this.item_coletado[2]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[2]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         this.keyObj4.on('down', function(event){//Comando para teste
              if(this.item_coletado[3]!=null){
-             this.scene.start('desc',this.item_coletado[3]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[3]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         this.keyObj5.on('down', function(event){//Comando para teste
              if(this.item_coletado[4]!=null){
-             this.scene.start('desc',this.item_coletado[4]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[4]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         this.keyObj6.on('down', function(event){//Comando para teste
              if(this.item_coletado[5]!=null){
-             this.scene.start('desc',this.item_coletado[5]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[5]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         this.keyObj7.on('down', function(event){//Comando para teste
              if(this.item_coletado[6]!=null){
-             this.scene.start('desc',this.item_coletado[6]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.launch('desc',this.item_coletado[6]);// Linha de teste pra testar a criação da Cena descrição
+             this.scene.pause();
              }
          },this);
         
@@ -449,6 +449,9 @@ class Jogo extends Phaser.Scene {
                 }
             } 
         },this);
+        
+        
+     console.log(this.map.getTileAt(14,26,false,this.colisao));
     }
 
     /** Update called every tick. */
@@ -543,9 +546,6 @@ class Jogo extends Phaser.Scene {
         }
         else if(item.texture.key=='chave2'){
             this.HasChave0 = true;
-        }
-        else if(item.name == 'Nota'){
-            this.warp_espelho = true
         }
         if(this.contador==7){
             this.FIM = true;
@@ -676,7 +676,9 @@ class Jogo extends Phaser.Scene {
                 
             }else if(ponto.isItem){
                 this.player.onPoit = true;
+                console.log('a vida');
                 if(this.player.aperta){
+                    this.player.onPoit = false;
                     this.Array_Objetos = this.item.children.entries;
                     this.Retorna =  this.Array_Objetos.filter(function(objeto) {
 	                   return objeto.name == ponto.varial;
@@ -685,7 +687,7 @@ class Jogo extends Phaser.Scene {
                 console.log(this.Retorna[0]);//chaaaaaaaaaaaaaaa
                 this.coleta(this.player,this.Retorna[0]);
                 ponto.destroy();
-                this.player.onPoit = false;
+                
                 }
             }
     }

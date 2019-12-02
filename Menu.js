@@ -5,7 +5,7 @@ class  Menu extends Phaser.Scene{
 
     preload(){
         //this.load.image("menu","img/provisorio.jpg");
-        this.load.image("tuto","img/tutorial1.jpg")
+        this.load.image("tuto","img/tutorial.png")
 
         this.load.spritesheet({
             key: 'menu',
@@ -58,8 +58,8 @@ class  Menu extends Phaser.Scene{
             music.play('loop2');
         });
 
-            var sprite_tutorial = this.add.sprite(40, 100, 'tuto').setInteractive();
-    sprite_tutorial.scale = .2;
+            var sprite_tutorial = this.add.sprite(60, 100, 'tuto').setInteractive();
+    sprite_tutorial.scale = 1;
 
     sprite_tutorial.on('pointerdown', function (pointer) {
 
@@ -70,8 +70,8 @@ class  Menu extends Phaser.Scene{
 
     },this);
         
-    var sprite = this.add.sprite(40, 200, 'botao').setInteractive();
-    sprite.scale = .4;
+    var sprite = this.add.sprite(60, 200, 'botao').setInteractive();
+    sprite.scale = 1;
 
     sprite.on('pointerdown', function (pointer) {
 
