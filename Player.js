@@ -143,7 +143,7 @@ class Player extends Phaser.GameObjects.Sprite {
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
             
-        this.sprite1.x = this.x + 4.5;
+        this.sprite1.x = this.x + 18;
         this.sprite1.y = this.y - 10;
     
         // movement and animation

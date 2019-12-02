@@ -20,6 +20,8 @@ class Descricao extends Phaser.Scene {
         this.load.image("diario8", "img/nota_8_png.png");
         this.load.image("diario9", "img/nota_9_png.png");
         this.load.image("diario10", "img/nota_10_png.png");
+        this.load.image("esq", "img/Setinha_esquerda.png");
+        this.load.image("dir", "img/Setinha_direita.png");
     }
     create(){
         this.page = 0;
@@ -29,11 +31,7 @@ class Descricao extends Phaser.Scene {
         this.scene.stop();
         }
          ,this);
-        
-         
-        
-        
-        
+
         this.Over_cam1 = this.make.sprite({
         x: 300,
         y: 190,
@@ -101,7 +99,7 @@ class Descricao extends Phaser.Scene {
          ,this);
             
             //aaaaaa
-            this.nota = this.make.sprite({
+        this.nota = this.make.sprite({
         x: 300,
         y: 180,
         scale:5,
@@ -111,13 +109,13 @@ class Descricao extends Phaser.Scene {
         x: 100,
         y: 250,
         scale:1,
-        key: 'Diario'}).setScrollFactor(0);
+        key: 'esq'}).setScrollFactor(0);
             
         this.prox = this.make.sprite({
         x: 500,
         y: 250,
         scale:1,
-        key: 'Diario'}).setScrollFactor(0);
+        key: 'dir'}).setScrollFactor(0);
             
         }
         

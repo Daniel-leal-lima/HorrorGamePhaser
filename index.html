@@ -28,6 +28,8 @@
     <script src="Menu.js"></script>
     <script src="GameOver.js"></script>
     <script src="Tutorial.js"></script>
+    <script src="Fim.js"></script>
+    <script src="Creditos.js"></script>
 <script>
 
         /**
@@ -46,7 +48,9 @@
                 this.scene.add('pause', Pause, false);//adiciona cena
                 this.scene.add('tutorial', Tutorial, false);
                 this.scene.add('desc', Descricao, false);
-                this.scene.add('gameover', GameOver, true);
+                this.scene.add('gameover', GameOver, false);
+                this.scene.add('Fim', Fim, true);
+                this.scene.add('creditos', Creditos, false);
             }
         }
 

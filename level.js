@@ -104,6 +104,7 @@ class Jogo extends Phaser.Scene {
         this.load.image("tile1", "map/Tile1.png");
         this.load.image("tile2", "map/floor.png");
         this.load.image("tile3", "map/base_out_atlas.png");
+        this.load.image("Cerca_tile", "map/TileCerca.png");
         this.load.image("Porta_tile", "map/Porta.png");
         this.load.tilemapTiledJSON("level-1", "map/mapa32.json");
         this.load.image('mask', 'img/mask1.png');
@@ -158,17 +159,17 @@ class Jogo extends Phaser.Scene {
         // Make map of level 1.
         this.map = this.make.tilemap({key: "level-1"});
 
-
         // Define tiles used in map.
         const tileset1 = this.map.addTilesetImage("Tile1", "tile1"); 
         const tileset2 = this.map.addTilesetImage("floor", "tile2"); 
         const tileset3 = this.map.addTilesetImage("base_out_atlas", "tile3"); 
-        const tilesetPorta = this.map.addTilesetImage("Porta", "Porta_tile"); 
+        const tilesetPorta = this.map.addTilesetImage("Porta", "Porta_tile");
+        const tilesetCerca = this.map.addTilesetImage("TileCerca", "Cerca_tile");
         
         // The map layers.
         this.floorLayer = this.map.createStaticLayer("chao", [tileset1,tileset2,tileset3]);
         this.wallsLayer = this.map.createStaticLayer("grama", [tileset1,tileset2,tileset3]);
-        this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3]);
+        this.aboveLayer = this.map.createStaticLayer("muros e paredes", [tileset1,tileset2,tileset3,tilesetCerca]);
         this.colisao = this.map.createDynamicLayer("colisao", [tilesetPorta]);//mudar para Doors
         this.rachaduras = this.map.createStaticLayer("rachaduras paredes", [tileset1,tileset2,tileset3]);
         
@@ -555,16 +556,16 @@ class Jogo extends Phaser.Scene {
     Leva(jogador,warp){
         switch(warp.ID){
             case 'warp1':
-                this.player.x= 1041;
-                this.player.y= 920;
+                this.player.x= 1021;
+                this.player.y= 917;
                 break;
             case 'warp2':
                 this.player.x= 1041;
                 this.player.y= 1059;
                 break;
             case 'warp3':
-                this.player.x= 1310;
-                this.player.y= 627;
+                this.player.x= 1317;
+                this.player.y= 614;
                 break;
             case 'warp4':
                 this.player.x= 1172;
@@ -575,8 +576,8 @@ class Jogo extends Phaser.Scene {
                 this.player.y= 544;
                 break;
             case 'warp6':
-                this.player.x= 907;
-                this.player.y= 634;
+                this.player.x= 929;
+                this.player.y= 610;
                 break;
             case 'warp7':
                 this.player.x= 447;
@@ -591,6 +592,7 @@ class Jogo extends Phaser.Scene {
                 this.player.y= 630;
                 break;
             case 'warp10':
+                this.Som_chuva.stop();
                 this.scene.stop();
                 this.scene.start('Fim');
                 break;
@@ -676,7 +678,6 @@ class Jogo extends Phaser.Scene {
                 
             }else if(ponto.isItem){
                 this.player.onPoit = true;
-                console.log('a vida');
                 if(this.player.aperta){
                     this.player.onPoit = false;
                     this.Array_Objetos = this.item.children.entries;
@@ -694,8 +695,8 @@ class Jogo extends Phaser.Scene {
     
     roomStart(roomNumber) {//aaaaaaaaaaaaaaa
         if (roomNumber == 4) {
-            this.cameras.main.shake(2500, 0.001, true);
-            console.log(this.player.visited)
+            //this.cameras.main.shake(2500, 0.001, true);
+            //console.log(this.player.visited)
         }
     }
      findPath(start, finish) {

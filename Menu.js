@@ -20,6 +20,8 @@ class  Menu extends Phaser.Scene{
         
 		this.load.image("botao","img/play.png");
         
+        this.load.image("creditos_botao","img/creditos_menu.png");
+        
         this.load.image("logo","img/logo.png")
           this.load.audio('Tema', [
         'audio/Menu.ogg',
@@ -52,12 +54,21 @@ class  Menu extends Phaser.Scene{
         this.music.addMarker(this.markers[0]);
         this.music.addMarker(this.markers[1]);
         this.music.play('loop');
-     
         
         this.music.on('complete', function(music){
             music.play('loop2');
         });
+        var sprite_creditos = this.add.sprite(60, 300, 'creditos_botao').setInteractive();
+    sprite_creditos.scale = 1;
 
+    sprite_creditos.on('pointerdown', function (pointer) {
+
+        //this.setTint(0xff0000);
+        this.scene.pause();
+        this.scene.launch('creditos','menu');
+        
+
+    },this);
             var sprite_tutorial = this.add.sprite(60, 100, 'tuto').setInteractive();
     sprite_tutorial.scale = 1;
 

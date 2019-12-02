@@ -25,17 +25,6 @@ create(){
         scale:1,
         key:'gameoverimage'
 	});
-
-	var sprite = this.add.sprite(550, 320, 'botao1').setInteractive();
-    sprite.scale = .1;
-
-    sprite.on('pointerdown', function (pointer) {
-
-        //this.setTint(0xff0000);
-        this.scene.stop();
-        this.scene.start('menu');
-    },this);
-    
     
 	}
    update(){
@@ -44,7 +33,7 @@ create(){
        
        }
        else{
-            this.cameras.main.fadeIn(500,0,0,0);
+           this.cameras.main.fadeIn(500,0,0,0);
            this.scene.stop();
            this.scene.start('jogo');
 
